@@ -420,7 +420,8 @@ class ControllerResponsesCheckoutPay extends AController
 
             //customer details
             $this->data['customer_email'] = $this->customer->getEmail();
-            $phone = $this->data['customer_telephone'] = $this->customer->getTelephone() ?: $this->fc_session['telephone'];
+            $phone = $this->data['customer_telephone'] = $this->fc_session['telephone']
+                ?: $this->customer->getTelephone();
 
             $form = new AForm();
             $form->loadFromDb('CustomerFrm');
