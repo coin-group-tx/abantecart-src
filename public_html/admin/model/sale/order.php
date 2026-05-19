@@ -1947,4 +1947,35 @@ class ModelSaleOrder extends Model
         }
         return $output;
     }
+
+    /**
+     * @param int $orderId
+     * @param string $orderDataType
+     *
+     * @return array
+     * @throws AException
+     */
+    public function getOrderData(int $orderId, string $orderDataType = '')
+    {
+        $languageId = $this->language->getContentLanguageID();
+        $sql = "SELECT DISTINCT `type_id`
+                FROM " . $this->db->table('order_data_types');
+        if($orderDataType) {
+            $sql .= " WHERE `name`= '".$this->db->escape($orderDataType)."' LIMIT 1";
+        }
+        $result = $this->db->query($sql);
+        $typeIds = array_column($result->rows, 'type_id');
+        if ($typeIds) {
+            $sql = "SELECT dt.name, od.* 
+                    FROM " . $this->db->table('order_data') . " od
+                    LEFT JOIN " . $this->db->table('order_data_types') . " dt
+                        ON (od.type_id = dt.type_id AND dt.language_id = ".$languageId.")
+                    WHERE od.order_id = " . $orderId . " 
+                        AND od.type_id IN (" . implode(',', $typeIds) . ")
+                    ORDER BY od.type_id";
+            $result = $this->db->query($sql);
+            return $orderDataType? $result->row : $result->rows;
+        }
+        return [];
+    }
 }
