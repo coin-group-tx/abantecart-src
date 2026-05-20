@@ -27,7 +27,7 @@
     <definition>
         <key>entry_url</key>
         <value>
-            <![CDATA[Store URL:<br /><span class="help">Include the full URL to your store. Make sure to add '/' at the end. Example: http://www.yourdomain.com/path/<br /><br />Don't use directories to create a new store. You should always point another domain or sub domain to your hosting.</span>]]></value>
+            <![CDATA[Store URL:<br /><span class="help">Full URL to this store, ending with a slash (/). Can be a domain, a subdomain, or your main domain plus a path (e.g. https://www.yourdomain.com/path/). The path can be a virtual name, not a server folder. All stores share one installation.</span>]]></value>
     </definition>
     <definition>
         <key>entry_ssl</key>
