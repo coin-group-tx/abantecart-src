@@ -5,7 +5,7 @@
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2025 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
  *   License details are bundled with this package in the file LICENSE.txt.
@@ -17,6 +17,7 @@
  *    versions in the future. If you wish to customize AbanteCart for your
  *    needs, please refer to http://www.AbanteCart.com for more information.
  */
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 if (!defined('DIR_CORE')) {
     header('Location: static_pages/');
 }
@@ -38,7 +39,8 @@ class ControllerPagesAccountCreate extends AController
         $this->document->setTitle($this->language->get('heading_title'));
         /** @var ModelAccountCustomer $mdl */
         $mdl = $this->loadModel('account/customer');
-        $post = $this->request->post;
+        //reference. Validation method can mutate data
+        $post =& $this->request->post;
         if ($this->request->is_POST()) {
             if ($this->csrftoken->isTokenValid()) {
                 // validation based on field settings
@@ -70,8 +72,8 @@ class ControllerPagesAccountCreate extends AController
                         if (!$this->config->get('config_customer_email_activation')) {
                             //send welcome email
                             $mdl->sendWelcomeEmail($post['email'], true);
-                            //login customer after create account is approving and
-                            // email activation are disabled in settings
+                            //log in customer after create account is approving and
+                            // email activation is disabled in settings
                             $this->customer->login($post['loginname'], $post['password']);
                         } else {
                             //send activation email request and wait for confirmation
