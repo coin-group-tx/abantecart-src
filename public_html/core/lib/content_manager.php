@@ -437,7 +437,7 @@ class AContentManager
             $select_columns = "id.*,
                 cd.title as parent_name,
                 ( SELECT COUNT(*) FROM " . $this->db->table("contents") . " 
-                WHERE parent_content_id = i.content_id ) as cnt,
+                WHERE parent_content_id = i.content_id ) as children_count,
                 i.*	";
         }
 

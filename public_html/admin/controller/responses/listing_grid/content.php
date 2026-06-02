@@ -60,7 +60,7 @@ class ControllerResponsesListingGridContent extends AController
         }
 
         $filterData['store_id'] = $this->config->get('current_store_id');
-
+        $needSearchFilter = false;
         if ($this->request->post['nodeid']) {
             $parent_id = $this->request->post['nodeid'];
             $filterData['parent_id'] = $parent_id;
@@ -74,16 +74,15 @@ class ControllerResponsesListingGridContent extends AController
             //Add custom params
             $filterData['parent_id'] = $new_level = 0;
             //sign to search by title in all levels of contents
-            $need_filter = false;
             if (has_value($this->request->post['filters'])) {
                 $this->load->library('json');
                 $searchData = AJson::decode(htmlspecialchars_decode($this->request->post['filters']), true);
                 if ($searchData['rules']) {
-                    $need_filter = true;
+                    $needSearchFilter = true;
                 }
             }
 
-            if ($this->config->get('config_show_tree_data') && !$need_filter) {
+            if ($this->config->get('config_show_tree_data') && !$needSearchFilter) {
                 if ($filterData['subsql_filter']) {
                     $filterData['subsql_filter'] .= " AND i.parent_content_id='0' ";
                 } else {
@@ -101,7 +100,7 @@ class ControllerResponsesListingGridContent extends AController
         $response->records = $total;
         $response->userdata = new stdClass();
         $results = $this->acm->getContents($filterData);
-        $results = !$results ? [] : $results;
+        $results = $results ?: [];
         $i = 0;
 
         foreach ($results as $result) {
@@ -136,7 +135,8 @@ class ControllerResponsesListingGridContent extends AController
                 'action',
                 $new_level,
                 ($this->request->post['nodeid'] ?: null),
-                $result['content_id'] == $leaf_nodes[$result['content_id']],
+                //sign of parent
+                !(!$needSearchFilter && $result['children_count']),
                 false,
             ];
             $i++;
