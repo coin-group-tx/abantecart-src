@@ -121,10 +121,13 @@ class ModelCatalogProduct extends Model
             reset($data['product_description']);
         }
         // if new product
-        elseif (!is_int(key($data['product_description']))) {
-            $update = [];
-            foreach ($data['product_description'] as $field => $value) {
-                $update[$language_id][$field] = $value;
+        else{
+            if (!is_int(key($data['product_description']))) {
+                $update = [
+                    $language_id => $data['product_description']
+                ];
+            }else{
+                $update = $data['product_description'];
             }
             $this->language->replaceDescriptions(
                 'product_descriptions',
@@ -2333,8 +2336,8 @@ class ModelCatalogProduct extends Model
     public function getProducts($data = [], $mode = 'default')
     {
         $language_id = (int)$data['content_language_id'] ?: $this->config->get('storefront_language_id');
-        $store_id = (int)($data['store_id'] ?? $this->config->get('current_store_id'));
-
+        $storeIds = $data['store_id'] ?? $this->config->get('current_store_id');
+        $storeIds = is_array($storeIds) ? array_map('intval', $storeIds) : [ (int)$storeIds ];
         if ($data || $mode == 'total_only') {
             $match = '';
             $filter = $data['filter'] ?? [];
@@ -2359,7 +2362,7 @@ class ModelCatalogProduct extends Model
                     LEFT JOIN " . $this->db->table("product_descriptions") . " pd
                         ON (p.product_id = pd.product_id AND pd.language_id = '" . $language_id . "')
                     INNER JOIN " . $this->db->table('products_to_stores') . " ps
-                        ON (p.product_id = ps.product_id AND ps.store_id = '" . $store_id . "') ";
+                        ON (p.product_id = ps.product_id AND ps.store_id IN (" . implode(', ',$storeIds) . ")) ";
 
             if ($filter['category']) {
                 $sql .= " INNER JOIN " . $this->db->table("products_to_categories") . " p2c 
@@ -3164,5 +3167,16 @@ class ModelCatalogProduct extends Model
             ];
         }
         return $output;
+    }
+
+    /**
+     * @return array
+     * @throws AException
+     */
+    public function getUniqueTags()
+    {
+        $query = "SELECT DISTINCT tag FROM " . $this->db->table('product_tags');
+        $result = $this->db->query($query);
+        return $result->rows;
     }
 }

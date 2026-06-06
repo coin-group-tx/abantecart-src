@@ -1,6 +1,6 @@
 <?php
 include($tpl_common_dir . 'action_confirm.tpl');
-echo $collection_tabs ?>
+echo $tabs ?>
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
 		<div class="primary_content_actions pull-left">
@@ -16,7 +16,16 @@ echo $collection_tabs ?>
 						<i class="fa fa-plus fa-fw"></i>
 					</a>
 				</div>
-			<?php } ?>
+			<?php }
+            if ($preview) { ?>
+                <div class="btn-group">
+                    <a class="btn btn-white lock-on-click tooltips" target="_blank"
+                       href="<?php echo $preview; ?>" data-toggle="tooltip"
+                       data-original-title="<?php echo_html2view($text_view); ?>">
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </div>
+            <?php } ?>
 		</div>
 		<?php include($tpl_common_dir . 'content_buttons.tpl'); ?>
 	</div>
@@ -120,12 +129,6 @@ echo $collection_tabs ?>
 			<a class="btn btn-default" href="<?php echo $cancel; ?>">
 				<i class="fa fa-arrow-left fa-fw"></i> <?php echo $form['cancel']->text; ?>
 			</a>
-			<?php if($form['show_on_storefront']){ ?>
-			<a class="btn btn-info" target="_blank"
-			href="<?php echo $form['show_on_storefront']->href; ?>">
-			<i class="fa fa-external-link"></i> <?php echo $form['show_on_storefront']->text; ?>
-			</a>
-			<?php } ?>
 		</div>
 	</div>
 	</form>
@@ -133,7 +136,7 @@ echo $collection_tabs ?>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.chosen-container-multi, .chosen-container-single').css('width', '30%');
+        $('#conditions_list').find('.chosen-container-multi, .chosen-container-single').css('width', '30%');
     });
 
     var idx = $('#conditions_list div.form-group').length + 1;
@@ -161,7 +164,12 @@ echo $collection_tabs ?>
 
                 $('#collectionsFrm_condition_object').val(0).change();
 
-                setTimeout(()=> { $('.chosen-container-multi, .chosen-container-single').css('width', '40%');}, 300);
+                setTimeout(()=> {
+                    $('#conditions_list')
+                        .find('.chosen-container-multi, .chosen-container-single')
+                        .css('width', '40%');},
+                    300
+                );
             }
         });
     });
@@ -187,5 +195,4 @@ echo $collection_tabs ?>
             }
         });
     });
-
 </script>

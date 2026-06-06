@@ -33,11 +33,12 @@ class ControllerResponsesListingGridCollections extends AController
         //init controller data
         $this->extensions->hk_InitData($this, __FUNCTION__);
 
-        $this->loadModel('catalog/collection');
+        /** @var ModelCatalogCollection $mdl */
+        $mdl = $this->loadModel('catalog/collection');
 
         $data = $this->request->post;
         $data['store_id'] = (int)$this->config->get('current_store_id');
-        $result = $this->model_catalog_collection->getCollections($data);
+        $result = $mdl->getCollections($data);
         $response = new stdClass();
         $response->page = $result['page'];
         $response->total = ceil($result['total'] / $result['limit']);
@@ -75,7 +76,8 @@ class ControllerResponsesListingGridCollections extends AController
         //init controller data
         $this->extensions->hk_InitData($this, __FUNCTION__);
 
-        $this->loadModel('catalog/collection');
+        /** @var ModelCatalogCollection $mdl */
+        $mdl = $this->loadModel('catalog/collection');
         if (!$this->user->canModify('listing_grid/collections')) {
             $error = new AError('');
             $error->toJSONResponse(
@@ -88,15 +90,15 @@ class ControllerResponsesListingGridCollections extends AController
                 ]
             );
         }
-        $collectionId = $this->request->get['id'];
+        $collectionId = (int)$this->request->get['id'];
         if ($this->request->is_POST()) {
             $post = $this->request->post;
             if (is_array($post['status'])) {
                 foreach ($post['status'] as $key => $value) {
-                    $this->model_catalog_collection->update($key, ['status' => (int)$value]);
+                    $mdl->update((int)$key, ['status' => (int)$value]);
                 }
             } elseif ($collectionId && $this->validate($post)) {
-                $this->model_catalog_collection->update($collectionId, $post);
+                $mdl->update($collectionId, $post);
             } else {
                 $error = new AError('');
                 $error->toJSONResponse('VALIDATION_ERROR_406', ['error_text' => $this->error]);
@@ -107,6 +109,12 @@ class ControllerResponsesListingGridCollections extends AController
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
     }
 
+    /**
+     * @param array $data
+     *
+     * @return bool
+     * @throws AException
+     */
     protected function validate(array $data)
     {
         $this->loadModel('catalog/collection');
@@ -119,7 +127,7 @@ class ControllerResponsesListingGridCollections extends AController
         }
 
         if ($this->html->isSEOkeywordExists(
-            'collection_id=' . $this->request->get['id'],
+            'collection_id=' . (int)$this->request->get['id'],
             $this->request->post['keyword']
         )
         ) {
@@ -134,7 +142,8 @@ class ControllerResponsesListingGridCollections extends AController
         //init controller data
         $this->extensions->hk_InitData($this, __FUNCTION__);
 
-        $this->loadModel('catalog/collection');
+        /** @var ModelCatalogCollection $mdl */
+        $mdl = $this->loadModel('catalog/collection');
 
         if ($this->request->is_POST()) {
             $post = $this->request->post;
@@ -143,8 +152,8 @@ class ControllerResponsesListingGridCollections extends AController
                     return;
                 }
                 foreach ($post['status'] as $key => $value) {
-                    $this->model_catalog_collection->update(
-                        $key,
+                    $mdl->update(
+                        (int)$key,
                         [
                             'status' => (int)$value,
                         ]
@@ -153,9 +162,9 @@ class ControllerResponsesListingGridCollections extends AController
             }
 
             if ($post['oper'] === 'del' && isset($post['id'])) {
-                $ids = array_unique(explode(',', $post['id']));
+                $ids = filterIntegerIdList(explode(',', $post['id']));
                 foreach ($ids as $id) {
-                    $this->model_catalog_collection->delete($id);
+                    $mdl->delete( $id );
                 }
             }
         }
@@ -164,6 +173,13 @@ class ControllerResponsesListingGridCollections extends AController
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
     }
 
+    /**
+     * @param int $instance_id
+     * @param array $value
+     *
+     * @return void|null
+     * @throws AException
+     */
     public function getFieldsByConditionObject($instance_id = 0, $value = [])
     {
         $this->loadLanguage('catalog/collections');
@@ -186,10 +202,17 @@ class ControllerResponsesListingGridCollections extends AController
                 'form_name' => 'collectionsFrm',
                 'update'    => $this->html->getSecureURL(
                     'listing_grid/collections/update_field',
-                    '&id=' . $this->request->get['id']
+                    '&id=' . (int)$this->request->get['id']
                 ),
             ]
         );
+        /**
+         * @see getFieldsForProducts()
+         * @see getFieldsForProductPrice()
+         * @see getFieldsForCategories()
+         * @see getFieldsForBrands()
+         * @see getFieldsForTags()
+         */
         $method = 'getFieldsFor'
             . str_replace(
                 ' ',
@@ -215,14 +238,22 @@ class ControllerResponsesListingGridCollections extends AController
         $this->response->setOutput(AJson::encode($response));
     }
 
-    protected function getFieldsForProducts($value = '')
+    /**
+     * @param array $value
+     *
+     * @return array
+     * @throws AException
+     */
+    protected function getFieldsForProducts($value = [])
     {
         $listing_data = [];
-        if (is_array($value) && is_array($value['value']) && ($prodIds = array_filter($value['value'])) ) {
-            $this->loadModel('catalog/product');
+        if (is_array($value) && is_array($value['value']) && ($prodIds = filterIntegerIdList($value['value'])) ) {
+            /** @var ModelCatalogProduct $pMdl */
+            $pMdl = $this->loadModel('catalog/product');
             $filter = ['subsql_filter' => 'p.product_id in (' . implode(',', $prodIds) . ')'];
+            $filter['store_id'] = $value['store_ids'];
 
-            $results = $this->model_catalog_product->getProducts($filter);
+            $results = $pMdl->getProducts($filter);
             if ($results) {
                 $resource = new AResource('image');
                 foreach ($results as $r) {
@@ -248,6 +279,7 @@ class ControllerResponsesListingGridCollections extends AController
             [
                 'type'    => 'selectbox',
                 'name'    => 'conditions[conditions][' . $this->request->post['idx'] . '][operator]',
+                'style'   => 'no-save',
                 'options' => [
                     'in'    => $this->language->get('text_in'),
                     'notin' => $this->language->get('text_not_in'),
@@ -263,7 +295,7 @@ class ControllerResponsesListingGridCollections extends AController
                 'value'       => !$value ? '' : $value['value'],
                 'options'     => $listing_data,
                 'sortable'    => true,
-                'style'       => 'chosen',
+                'style'       => 'chosen no-save',
                 'ajax_url'    => $this->html->getSecureURL('r/product/product/products'),
                 'placeholder' => $this->language->get('text_select_from_lookup'),
             ]
@@ -272,6 +304,12 @@ class ControllerResponsesListingGridCollections extends AController
         return $response;
     }
 
+    /**
+     * @param array $value
+     *
+     * @return array
+     * @throws AException
+     */
     protected function getFieldsForProductPrice($value = [])
     {
         $response['text'] = $this->language->get('entry_product_price');
@@ -279,6 +317,7 @@ class ControllerResponsesListingGridCollections extends AController
             [
                 'type'    => 'selectbox',
                 'name'    => 'conditions[conditions][' . $this->request->post['idx'] . '][operator]',
+                'style'   => 'no-save',
                 'options' => [
                     'eq'   => $this->language->get('text_equal'),
                     'neq'  => $this->language->get('text_not_equal'),
@@ -295,14 +334,20 @@ class ControllerResponsesListingGridCollections extends AController
                 'type'  => 'input',
                 'name'  => 'conditions[conditions][' . $this->request->post['idx'] . '][value]',
                 'value' => !$value ? '' : $value['value'],
-                'style' => 'small-field',
+                'style' => 'small-field no-save',
             ]
         );
         $response['fields'] .= '(' . $this->config->get('config_currency') . ')';
         return $response;
     }
 
-    protected function getFieldsForCategories($value = '')
+    /**
+     * @param array $value
+     *
+     * @return array
+     * @throws AException
+     */
+    protected function getFieldsForCategories($value = [])
     {
         $this->loadLanguage('catalog/collections');
         $response['text'] = $this->language->get('entry_categories');
@@ -310,6 +355,7 @@ class ControllerResponsesListingGridCollections extends AController
             [
                 'type'    => 'selectbox',
                 'name'    => 'conditions[conditions][' . $this->request->post['idx'] . '][operator]',
+                'style'   => 'no-save',
                 'options' => [
                     'in'    => $this->language->get('text_in'),
                     'notin' => $this->language->get('text_not_in'),
@@ -317,10 +363,12 @@ class ControllerResponsesListingGridCollections extends AController
                 'value'   => !$value ? '' : $value['operator'],
             ]
         );
-        $this->loadModel('catalog/category');
-        $results = $this->model_catalog_category->getCategories(
+
+        /** @var ModelCatalogCategory $cMdl */
+        $cMdl = $this->loadModel('catalog/category');
+        $results = $cMdl->getCategories(
             ROOT_CATEGORY_ID,
-            $this->config->get('current_store_id')
+            $value['store_ids'] ?? $this->config->get('current_store_id')
         );
         $categories = array_column($results, 'name', 'category_id');
 
@@ -330,7 +378,7 @@ class ControllerResponsesListingGridCollections extends AController
                 'name'        => 'conditions[conditions][' . $this->request->post['idx'] . '][value][]',
                 'value'       => !$value ? '' : $value['value'],
                 'options'     => $categories,
-                'style'       => 'chosen',
+                'style'       => 'chosen no-save',
                 'placeholder' => $this->language->get('text_select_category'),
             ]
         );
@@ -338,7 +386,13 @@ class ControllerResponsesListingGridCollections extends AController
         return $response;
     }
 
-    protected function getFieldsForBrands($value = '')
+    /**
+     * @param $value
+     *
+     * @return array
+     * @throws AException
+     */
+    protected function getFieldsForBrands($value = [])
     {
         $response['text'] = $this->language->get('entry_brands');
         $response['fields'] = $this->form->getFieldHtml(
@@ -350,10 +404,13 @@ class ControllerResponsesListingGridCollections extends AController
                     'notin' => $this->language->get('text_not_in'),
                 ],
                 'value'   => !$value ? '' : $value['operator'],
+                'style'   => 'no-save',
             ]
         );
-        $this->loadModel('catalog/manufacturer');
-        $results = $this->model_catalog_manufacturer->getManufacturers();
+
+        /** @var ModelCatalogManufacturer $mMdl */
+        $mMdl = $this->loadModel('catalog/manufacturer');
+        $results = $mMdl->getManufacturers( ['store_id' => $value['store_ids']] );
         $manufacturers = array_column($results, 'name', 'manufacturer_id');
 
         $response['fields'] .= $this->form->getFieldHtml(
@@ -362,14 +419,20 @@ class ControllerResponsesListingGridCollections extends AController
                 'name'        => 'conditions[conditions][' . $this->request->post['idx'] . '][value][]',
                 'value'       => !$value ? '' : $value['value'],
                 'options'     => $manufacturers,
-                'style'       => 'chosen',
+                'style'       => 'chosen no-save',
                 'placeholder' => $this->language->get('text_select_brand'),
             ]
         );
         return $response;
     }
 
-    protected function getFieldsForTags($value = '')
+    /**
+     * @param array $value
+     *
+     * @return array
+     * @throws AException
+     */
+    protected function getFieldsForTags($value = [])
     {
         $response['text'] = $this->language->get('entry_tags');
         $response['fields'] = $this->form->getFieldHtml(
@@ -378,25 +441,25 @@ class ControllerResponsesListingGridCollections extends AController
                 'name'    => 'conditions[conditions][' . $this->request->post['idx'] . '][operator]',
                 'options' => [
                     'in'    => $this->language->get('text_in'),
-                    'notin' => $this->language->get('text_not_in'),
                 ],
-                'value'   => !$value ? '' : $value['operator'],
+                'value'   => $value['operator'] ?: '',
+                'style'   => 'no-save',
             ]
         );
-        $this->loadModel('catalog/collection');
-        $results = $this->model_catalog_collection->getUniqueTags();
+        /** @var ModelCatalogProduct $pMdl */
+        $pMdl = $this->loadModel('catalog/product');
+        $results = $pMdl->getUniqueTags();
         $tags = array_column($results, 'tag', 'tag');
         $response['fields'] .= $this->form->getFieldHtml(
             [
                 'type'        => 'checkboxgroup',
                 'name'        => 'conditions[conditions][' . $this->request->post['idx'] . '][value][]',
-                'value'       => !$value ? '' : $value['value'],
+                'value'       => $value['value']?:'',
                 'options'     => $tags,
-                'style'       => 'chosen',
+                'style'       => 'chosen no-save',
                 'placeholder' => $this->language->get('text_select_tag'),
             ]
         );
         return $response;
     }
-
 }
