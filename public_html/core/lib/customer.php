@@ -91,7 +91,7 @@ class ACustomer
         $this->dcrypt = $registry->get('dcrypt');
         $this->load = $registry->get('load');
         $this->extensions = $registry->get('extensions');
-        $this->cart &= $registry->get('cart');
+        $this->cart = $registry->get('cart');
 
         if (isset($this->session->data['customer_id'])) {
             $customer_data = $this->db->query(
