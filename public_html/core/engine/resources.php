@@ -268,7 +268,7 @@ class AResource
         $cache_key = preg_replace('/[^a-zA-Z0-9.]/', '', $cache_key);
         $resource = $this->cache->pull($cache_key);
         if ($resource === false) {
-            $where = "WHERE rl.resource_id = " . $this->db->escape($resource_id);
+            $where = "WHERE rl.resource_id = " . (int)$resource_id;
             $sql = "SELECT  rd.*,
                             COALESCE(rd.resource_path,rdd.resource_path) as resource_path,
                             COALESCE(rd.resource_code,rdd.resource_code) as resource_code,
@@ -524,6 +524,8 @@ class AResource
         $noimage = true
     )
     {
+        $object_name = (string)$object_name;
+        $object_id = (int)$object_id;
         if (!$object_id || !$object_name) {
             return [];
         }
@@ -743,8 +745,8 @@ class AResource
         }
 
         $where = "WHERE rm.object_name = '" . $this->db->escape($object_name) . "' "
-            . " and rm.object_id = '" . $this->db->escape($object_id) . "' "
-            . " and rl.type_id = " . $this->db->escape($this->type_id);
+            . " and rm.object_id = '" . (int)$object_id . "' "
+            . " and rl.type_id = " . (int)$this->type_id;
 
         $sql = "SELECT
                     rl.resource_id,
