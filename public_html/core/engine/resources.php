@@ -839,7 +839,8 @@ class AResource
                 implode('.', $object_ids)
                 . implode('.', func_get_args())
                 . $this->config->get('config_url')
-                . $language_id
+                . $language_id 
+                . (IS_ADMIN ? 1 : 0)
             );
 
         $output = $this->cache->pull($cache_key);
@@ -935,12 +936,15 @@ class AResource
             } //for internal resources
             else {
                 $thumb_url = $this->getResizedImageURL($row, $width, $height);
+                $title = IS_ADMIN 
+                    ? html2view('#'. $object_id . ' - ' . $title)
+                    : html2view($title);
                 $output[$object_id]['thumb_html'] = $this->html->buildResourceImage(
                     [
                         'url'    => $thumb_url,
                         'width'  => $width,
                         'height' => $height,
-                        'attr'   => 'alt="' . html2view($title) . '" title="' . html2view($title) . '" ',
+                        'attr'   => 'alt="' . $title . '" title="'.$title . '" ',
                     ]
                 );
                 $output[$object_id]['thumb_url'] = $thumb_url;
