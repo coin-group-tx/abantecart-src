@@ -2168,9 +2168,12 @@ class ModelCatalogProduct extends Model
                 if (is_array($condition['value']) && $condition['value']) {
                     //Brands filter
                     if ($condition['object'] === 'brands') {
-                        $arWhere[] = "manufacturer_id "
-                            . $this->gerInOperator($condition['operator'], $relation['value'])
-                            . " (" . implode(',', $condition['value']) . ")";
+                        $condition['value'] = filterIntegerIdList($condition['value']);
+                        if ($condition['value']) {
+                            $arWhere[] = "manufacturer_id "
+                                . $this->gerInOperator($condition['operator'], $relation['value'])
+                                . " (" . implode(',', $condition['value']) . ")";
+                        }
                     }
                     //Category filter
                     if ($condition['object'] === 'categories') {
@@ -2184,15 +2187,20 @@ class ModelCatalogProduct extends Model
                             $allCategoryChildren = array_merge($allCategoryChildren, $mdl->getChildrenIDs((int) $cId));
                         }
                         $allCategoryChildren = filterIntegerIdList($allCategoryChildren);
-                        $arWhere[] = $alias . ".category_id "
-                            . $this->gerInOperator($condition['operator'], $relation['value'])
-                            . " (" . implode(',', $allCategoryChildren) . ")";
+                        if ($allCategoryChildren) {
+                            $arWhere[] = $alias . ".category_id "
+                                . $this->gerInOperator($condition['operator'], $relation['value'])
+                                . " (" . implode(',', $allCategoryChildren) . ")";
+                        }
                     }
                     //Product filter
                     if ($condition['object'] === 'products') {
-                        $arWhere[] = "p.product_id "
-                            . $this->gerInOperator($condition['operator'], $relation['value'])
-                            . " (" . implode(',', filterIntegerIdList($condition['value'])) . ")";
+                        $values = filterIntegerIdList($condition['value']);
+                        if ($values) {
+                            $arWhere[] = "p.product_id "
+                                . $this->gerInOperator($condition['operator'], $relation['value'])
+                                . " (" . implode(',', $values) . ")";
+                        }
                     }
 
                     //Tags filter
@@ -2202,7 +2210,7 @@ class ModelCatalogProduct extends Model
                                      ON (" . $alias . ".product_id = p.product_id
                                         AND " . $alias . ".language_id =" . $languageId . ')';
                         foreach ($condition['value'] as &$value) {
-                            $value = "'" . $value . "'";
+                            $value = "'" . $this->db->escape($value) . "'";
                         }
                         $arWhere[] = $alias . ".tag "
                             . $this->gerInOperator($condition['operator'], $relation['value'])
@@ -2210,10 +2218,10 @@ class ModelCatalogProduct extends Model
                     }
                 }
                 //Product price filter
-                if ($condition['object'] === 'product_price' && (int) $condition['value'] > 0) {
+                if ($condition['object'] === 'product_price' && (float) $condition['value'] > 0) {
                     $arWhere[] = str_replace(' as final_price', '', $this->_sql_final_price_string()) . " "
                         . $this->gerEqualOperator($condition['operator'], $relation['value'])
-                        . $condition['value'];
+                        . (float) $condition['value'];
                 }
             }
 
