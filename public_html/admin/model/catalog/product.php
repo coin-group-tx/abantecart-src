@@ -3124,10 +3124,10 @@ class ModelCatalogProduct extends Model
      * @return array
      * @throws AException
      */
-    public function getPreviewProductList(array $ids, array $options = [])
+    public function getPreviewProductList( $ids, array $options = [])
     {
         $output = [];
-        $ids = filterIntegerIdList($ids);
+        $ids = filterIntegerIdList((array)$ids);
         $filter = [
             'store_id' => $options['store_id'] ?? $this->config->get('config_store_id'),
             'content_language_id' => $this->language->getContentLanguageID(),
