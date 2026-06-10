@@ -238,7 +238,7 @@ class ModelCheckoutOrder extends Model
         //reuse the same order_id or unused one order_status_id = 0
         if ($setOrderId) {
             $query = $this->db->query(
-                "SELECT order_id
+                "SELECT *
                 FROM `" . $this->db->table("orders") . "`
                 WHERE order_id = " . $setOrderId . " 
                     AND order_status_id = '0'"
@@ -246,7 +246,7 @@ class ModelCheckoutOrder extends Model
 
             if (!$query->num_rows) { // for already processed orders do redirect
                 $query = $this->db->query(
-                    "SELECT order_id
+                    "SELECT *
                     FROM `" . $this->db->table("orders") . "`
                     WHERE order_id = " . $setOrderId . " 
                         AND order_status_id > 0"
@@ -256,6 +256,13 @@ class ModelCheckoutOrder extends Model
                 }
                 //remove
             } else {
+                //do not clear custom columns during order rebuild
+                $priorData = array_intersect($query->row,(array)$this->data['order_column_list']);
+                foreach($priorData as $key => $value) {
+                    if($value) {
+                        $data[$key] = $value;
+                    }
+                }
                 $this->_remove_order($query->row['order_id']);
             }
         }

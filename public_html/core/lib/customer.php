@@ -560,6 +560,16 @@ class ACustomer
     }
 
     /**
+     * @param string|int $telephone
+     *
+     * @return void
+     */
+    public function setTelephone(string|int $telephone)
+    {
+        $this->telephone = $telephone;
+    }
+
+    /**
      * @return string
      */
     public function getFax()
