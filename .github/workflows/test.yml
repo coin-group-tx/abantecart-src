@@ -10,6 +10,9 @@ jobs:
       contents: read
     name: Integration tests
     runs-on: ubuntu-latest
+    env: 
+      DOCKER_CLIENT_TIMEOUT: "120"
+      COMPOSE_CLIENT_TIMEOUT: "120"
 
     strategy:
       matrix:
