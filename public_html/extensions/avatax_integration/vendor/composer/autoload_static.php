@@ -4,15 +4,20 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
+class ComposerStaticInit4c4272750b8164f411ac50a08a9225f9
 {
     public static $files = array (
-        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -28,6 +33,10 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -56,6 +65,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
     );
 
     public static $classMap = array (
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Avalara\\ACHEntryDetailModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\APConfigSettingRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\APConfigSettingSuccessResponseModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -134,14 +144,19 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\CertificateAttributeModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CertificateEcmStatus' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\CertificateInvalidReasonModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CertificateJurisdictionListModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CertificateJurisdictionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CertificateLogModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CertificateModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CertificatePreviewType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\CertificateRequestDeliveryMethod' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\ChangeTransactionCodeModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ChargedTo' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
+        'Avalara\\ClassificationCriteriaModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ClassificationModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ClassificationParameterUsageMapModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ClassificationSettingsInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ClassificationSettingsOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ClerkLocationModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ClientExtensionExample' => __DIR__ . '/..' . '/avalara/avataxclient/src/ClientExtensionExample.php',
         'Avalara\\CombinedHSTConfigModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -174,6 +189,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ComplianceTaxRateModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\Compression' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\ContactModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ContentScope' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\Context' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CoordinateInfo' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CostCenterBulkUploadInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -186,6 +202,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\CountryCoefficientsRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CountryCoefficientsResponseModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CountryModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CountryScopeModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CoverLetterModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CreateAdvancedRulesBatchRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CreateAdvancedRulesBatchResponseModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -208,11 +225,25 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\CustomRuleSubtype' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\CustomRuleSummaryModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CustomRuleType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
+        'Avalara\\CustomTaxAdditionalCriteriaInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxAdditionalCriteriaOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxExemptionsInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxExemptionsOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxJurisdictionInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxJurisdictionOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxRateInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxRateOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxTaxabilityInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomTaxTaxabilityOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CustomerAttributeModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CustomerJobModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CustomerModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CustomerSupplierCountryParamModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CustomerSupplierModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomerSupplierWithCountryParamModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\CustomerVatNumberModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CycleAddOptionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CycleEditOptionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\CycleExpireModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -264,6 +295,9 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ErrorCodeOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ErrorDetail' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ErrorDetails' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ErrorInfo' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ErrorResult' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ErrorTargetCode' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\ErrorTransactionModelBase' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ErrorTransactionOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\EventDeleteBatchMessageModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -306,6 +340,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\FilingsTaxDetailsModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FilingsTaxSummaryModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FilterModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\FilterValue' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FirmClientLinkageInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FirmClientLinkageModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FirmClientLinkageOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -313,6 +348,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ForbiddenErrorResponse' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FormMasterModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FormTypeId' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
+        'Avalara\\FormTypeMappingModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FreeTrialRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FrequencyAvailableModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\FundingConfigurationModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -337,6 +373,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\IsoCountryModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\IsoLocalizedName' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\IsoRegionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemAdditionalHSCodeDutyInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemBulkUploadInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemBulkUploadOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemCatalogueInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -345,12 +382,21 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ItemCatalogueResultModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemClassificationInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemClassificationOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemCustomParametersModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemHSCodeClassificationInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemHSCodeClassificationOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemHSCodeClassificationSlaOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemHSCodeClassificationStatusInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemHSCodeClassificationStatusModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemHSCodeClassificationStatusOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeCvdAddDetailModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeDutyDetailModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeFTADetailModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodePunitiveRateDetailModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeRestrictionDetailModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeVerificationFailedRowModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeVerificationInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemHSCodeVerificationOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemImageDetailOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemImageDetailsModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -359,6 +405,12 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ItemPremiumClassificationOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemRestrictionInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemRestrictionOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemReverseSyncEventDefinitionOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemReverseSyncEventType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
+        'Avalara\\ItemReverseSyncRegistrationInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemReverseSyncRegistrationOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemReverseSyncRegistrationUpdateModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemReverseSyncTypeName' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\ItemStatusModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemStatusOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemSyncModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -368,6 +420,10 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ItemTaxCodeClassificationRequestOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemTaxCodeDetailsOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemTaxCodeRecommendationStatusModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemTaxcodeRecommendationBaseBatchOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemTaxcodeRecommendationBatchStatusOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemTaxcodeRecommendationBatchesInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ItemTaxcodeRecommendationBatchesOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ItemUploadErrorModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\JurisNameModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\JurisTypeId' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
@@ -376,6 +432,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\JurisdictionNexusModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\JurisdictionOverrideModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\JurisdictionRateTypeTaxTypeMappingModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\JurisdictionTaxTypesAndSubTypesModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\JurisdictionType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\LiabilityParametersModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\LiabilityType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
@@ -391,8 +448,6 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\LocationValidationModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\LockTransactionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\LogInformation' => __DIR__ . '/..' . '/avalara/avataxclient/src/LogObject.php',
-        'Avalara\\LoginVerificationInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
-        'Avalara\\LoginVerificationOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\MarketplaceLiabilityType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\MarketplaceLocationModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\MarketplaceModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -409,6 +464,8 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\MultiTaxFilingModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\MultiTaxFilingRegionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\MultiTaxFilingReturnModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\NaturalLanguageSearchRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\NaturalLanguageSearchResponseModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\NewAccountModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\NewAccountRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\NewFirmClientAccountRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -470,6 +527,7 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ProductSystemCountryModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ProvisionStatusModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\QueryRequestModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\RateItemModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\RateModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\RateType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\RateType1703Model' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -483,6 +541,13 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\RefundTransactionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\RefundType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\RemoveTransactionLineModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogFilterInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogFilterModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogParametersModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogReportInputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogReportModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ReportAuditLogResponseModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ReportCodeOptionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\ReportDateFilter' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\ReportDocType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
@@ -499,7 +564,6 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\ReturnsReportType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\RoundingLevelId' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\RoundingTypeId' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
-        'Avalara\\ScraperType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\SecurityRoleId' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\SecurityRoleModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\SendSalesFileType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
@@ -511,7 +575,6 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\SettleTransactionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\SeverityLevel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\ShippingVerifyResult' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
-        'Avalara\\SkyscraperStatusModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\Sourcing' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\StackAggregationOption' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\StateModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -551,7 +614,10 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\TaxTypeGroupModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\TaxTypeMappingModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\TaxTypeModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\TaxcodeBatchOutputModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\TextCase' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
+        'Avalara\\ThresholdStateSummaryModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\ThresholdStatusesModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\TransactionAddressModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\TransactionAddressType' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\TransactionBatchItemModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
@@ -586,22 +652,28 @@ class ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb
         'Avalara\\VarianceResponseLine' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\VarianceResponseModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\VarianceUnit' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\VendorAdditionalInfoModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\VendorCertificateModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
+        'Avalara\\VendorModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\VerifyMultiDocumentModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\VerifyTransactionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\Visibility' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\VoidReasonCode' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
         'Avalara\\VoidTransactionModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Avalara\\WorksheetTypeId' => __DIR__ . '/..' . '/avalara/avataxclient/src/Constants.php',
-        'Avalara\\requiredFilingCalendarDataFieldModel' => __DIR__ . '/..' . '/avalara/avataxclient/src/Models.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit04109dc4a6eef7d05cab5c1f8ff9cdeb::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4c4272750b8164f411ac50a08a9225f9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4c4272750b8164f411ac50a08a9225f9::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4c4272750b8164f411ac50a08a9225f9::$classMap;
 
         }, null, ClassLoader::class);
     }

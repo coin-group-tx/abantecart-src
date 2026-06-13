@@ -2,7 +2,7 @@
 namespace Avalara;
 use GuzzleHttp\Client;
 
-define('AVATAX_SDK_VERSION', '25.9.0');
+define('AVATAX_SDK_VERSION', '26.6.0');
 
 /*****************************************************************************
  *                                                                           *
@@ -359,6 +359,17 @@ class StackAggregationOption
      * City and county rates are aggregated.
      */
     const C_AGGREGATECITYANDCOUNTY = 3;
+
+}
+
+/**
+ * Swagger Name: AvaTaxClient
+ * 
+ */
+class ContentScope
+{    const C_SYSTEM = 0;
+    const C_CUSTOM = 1;
+    const C_ALL = 2;
 
 }
 
@@ -951,6 +962,16 @@ class ErrorCodeId
     const C_ADVANCEDRULEERROR = 1605;
 
     /**
+     * Represents an error occurred in dynamic rules
+     */
+    const C_DYNAMICRULEERROR = 1620;
+
+    /**
+     * Error for when dynamic rule validation has errors
+     */
+    const C_RULEVALIDATIONERROR = 1621;
+
+    /**
      * Miscellaneous
      */
     const C_TAXRULEREQUIRESNEXUS = 1701;
@@ -1223,6 +1244,24 @@ class ErrorCodeId
      */
     const C_REQUIREDPARAMETERSNOTFOUND = 4023;
     const C_NOCLASSIFICATIONSFOUND = 4024;
+    const C_INVALIDADDRESSORGEOCOORDINATES = 4025;
+
+    /**
+     * IDP relater error code
+     */
+    const C_QUERYPARSINGERROR = 4026;
+    const C_VALUEMISMATCH = 4027;
+    const C_INVALIDSTATUSFORHSVERIFICATION = 4028;
+    const C_CANNOTVERIFYHSCODE = 4029;
+    const C_REQUESTALREADYINPROGRESS = 4030;
+    const C_CLASSIFICATIONSETTINGSINPROGRESS = 4031;
+    const C_CANNOTDELETEENTITY = 4032;
+    const C_INCORRECTVALUEFORFIELD = 4033;
+
+    /**
+     * AP Threshold inheritance restriction — child company inherits AP Threshold settings from parent
+     */
+    const C_APTHRESHOLDINHERITANCERESTRICTION = 4034;
 
     /**
      * Error string from the service unknown
@@ -1473,6 +1512,13 @@ class BatchType
     const C_GLACCOUNTIMPORT = 16;
     const C_ADVANCEDRULESIMPORT = 17;
     const C_ITEMIMPORTV2 = 18;
+
+    /**
+     * This batch type represents VAT number validation data being uploaded.
+     *  Each line contains a business name, VAT number, and country code to be validated against VIES.
+     */
+    const C_VATVALIDATIONIMPORT = 19;
+    const C_TXNWITHDYNAMICPARAMBAG = 20;
 
 }
 
@@ -1863,6 +1909,11 @@ class CustomRuleStatus
      */
     const C_FUTURE = 4;
 
+    /**
+     * The rule is marked as draft and will not execute unless specifically enabled for testing.
+     */
+    const C_DRAFT = 5;
+
 }
 
 /**
@@ -2054,6 +2105,44 @@ class CustomRuleSubtype
      */
     const C_TAXRULEEXEMPTENTITY = 30;
 
+    /**
+     * Defines one or more custom content rules.
+     */
+    const C_CUSTOMTAX = 31;
+
+}
+
+/**
+ * Swagger Name: AvaTaxClient
+ * Jurisdiction Type
+ */
+class JurisdictionType
+{
+    /**
+     * Country
+     */
+    const C_COUNTRY = 0;
+
+    /**
+     * State
+     */
+    const C_STATE = 1;
+
+    /**
+     * County
+     */
+    const C_COUNTY = 2;
+
+    /**
+     * City
+     */
+    const C_CITY = 3;
+
+    /**
+     * Special Tax Jurisdiction
+     */
+    const C_SPECIAL = 4;
+
 }
 
 /**
@@ -2119,39 +2208,6 @@ class AvataxDeleteErrorTransactionStatus
      * Failed delete
      */
     const C_FAILURE = 1;
-
-}
-
-/**
- * Swagger Name: AvaTaxClient
- * Jurisdiction Type
- */
-class JurisdictionType
-{
-    /**
-     * Country
-     */
-    const C_COUNTRY = 0;
-
-    /**
-     * State
-     */
-    const C_STATE = 1;
-
-    /**
-     * County
-     */
-    const C_COUNTY = 2;
-
-    /**
-     * City
-     */
-    const C_CITY = 3;
-
-    /**
-     * Special Tax Jurisdiction
-     */
-    const C_SPECIAL = 4;
 
 }
 
@@ -2256,6 +2312,26 @@ class DynamicRuleComponentSubtype
     const C_MATCHTAX = 12;
 
     /**
+     * Matches based on jurisdiction and a custom tax type and subtype.
+     */
+    const C_CUSTOMTAX = 13;
+
+    /**
+     * Matches based on address jurisdictions.
+     */
+    const C_MATCHJURISDICTION = 14;
+
+    /**
+     * Matches based on the entity use code.
+     */
+    const C_MATCHENTITYUSECODE = 15;
+
+    /**
+     * Matches based on after-calculation messages.
+     */
+    const C_MATCHMESSAGE = 16;
+
+    /**
      * Unspecified action.
      */
     const C_ACTION = 256;
@@ -2346,6 +2422,16 @@ class DynamicRuleComponentSubtype
     const C_TAXRULEEXEMPTENTITY = 273;
 
     /**
+     * Adds a message or invoice message to the transaction response.
+     */
+    const C_ADDMESSAGE = 288;
+
+    /**
+     * Adds a line to the transaction.
+     */
+    const C_ADDLINE = 289;
+
+    /**
      * Unspecified variable.
      */
     const C_VARIABLE = 512;
@@ -2433,6 +2519,49 @@ class ExemptCertReviewStatusId
 
 /**
  * Swagger Name: AvaTaxClient
+ * What object experienced the error?
+ */
+class ErrorTargetCode
+{
+    /**
+     * Error target is unknown
+     */
+    const C_UNKNOWN = 0;
+
+    /**
+     * There was an error in the request URL, querystring, or body
+     */
+    const C_HTTPREQUEST = 1;
+
+    /**
+     * There was an error in the HTTP Request headers
+     */
+    const C_HTTPREQUESTHEADERS = 2;
+
+    /**
+     * Some data provided by the user was incorrect
+     */
+    const C_INCORRECTDATA = 3;
+
+    /**
+     * There was an error in the AvaTax API Server
+     */
+    const C_AVATAXAPISERVER = 10;
+
+    /**
+     * There was an error in the Avalara Identity Server
+     */
+    const C_AVALARAIDENTITYSERVER = 11;
+
+    /**
+     * The customer's account setup does not permit certain actions
+     */
+    const C_CUSTOMERACCOUNTSETUP = 12;
+
+}
+
+/**
+ * Swagger Name: AvaTaxClient
  * Different types of formats allowed for exporting a report
  */
 class ReportFormat
@@ -2441,6 +2570,11 @@ class ReportFormat
      * The Comma Separated Values file format
      */
     const C_CSV = 0;
+
+    /**
+     * The JavaScript Object Notation file format
+     */
+    const C_JSON = 1;
 
 }
 
@@ -2484,6 +2618,11 @@ class ReportDateFilter
  */
 class ReportDocType
 {
+    /**
+     * Output all tax transactions in the report
+     */
+    const C_ALL = 65;
+
     /**
      * Output all ConsumerUse tax transactions in the report
      */
@@ -2627,6 +2766,31 @@ class ReportSource
      * tax region and tax type
      */
     const C_TAXREGION = 3;
+
+    /**
+     * accounts payable document
+     */
+    const C_APDOCUMENT = 4;
+
+    /**
+     * accounts payable document line detail
+     */
+    const C_APDOCUMENTLINEDETAIL = 5;
+
+    /**
+     * document line detail all taxes
+     */
+    const C_DOCUMENTLINEDETAILALLTAXES = 6;
+
+    /**
+     * document summary
+     */
+    const C_DOCUMENTSUMMARY = 7;
+
+    /**
+     * document
+     */
+    const C_DOCUMENT = 8;
 
 }
 
@@ -3137,6 +3301,24 @@ class ItemCatalogueResultEvent
     const C_ITEMUPDATED = 1;
     const C_ITEMDELETED = 2;
     const C_ERROR = 3;
+
+}
+
+/**
+ * Swagger Name: AvaTaxClient
+ * 
+ */
+class ItemReverseSyncTypeName
+{    const C_WEBHOOK = 0;
+
+}
+
+/**
+ * Swagger Name: AvaTaxClient
+ * 
+ */
+class ItemReverseSyncEventType
+{    const C_HSCODEASSIGNED = 1;
 
 }
 
@@ -3781,24 +3963,6 @@ class SendSalesFileType
 
 /**
  * Swagger Name: AvaTaxClient
- * Type of verification task
- */
-class ScraperType
-{
-    /**
-     * Indicates that is is a login type
-     */
-    const C_LOGIN = 1;
-
-    /**
-     * Indicates that it is a Customer DOR Data type
-     */
-    const C_CUSTOMERDORDATA = 2;
-
-}
-
-/**
- * Swagger Name: AvaTaxClient
  * Represents a type of tax override requested by the customer.
  *  
  *  AvaTax allows customers to override some behavior of the AvaTax engine. When you use a
@@ -4060,6 +4224,7 @@ class APStatus
     const C_PENDINGSHORTPAYITEMSUNDERCHARGE = 24;
     const C_PENDINGSHORTPAYITEMSMATCH = 25;
     const C_PENDINGSHORTPAYITEMSOVERCHARGE = 26;
+    const C_NOACCRUALEXEMPTEDMAPPING = 27;
     const C_SHORTPAYITEMSACCRUEMATCH = -1;
     const C_MARKFORREVIEWMATCH = -1;
     const C_REJECTMATCH = -1;
@@ -4290,6 +4455,11 @@ class SecurityRoleId
      * AvaTaxOnlyCompanyUser
      */
     const C_AVATAXONLYCOMPANYUSER = 35;
+
+    /**
+     * AvaTaxOnlyUserAdmin
+     */
+    const C_AVATAXONLYUSERADMIN = 36;
 
 }
 
