@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
+class ComposerStaticInit9d5b26c4b361ac8c49e10b99ed5271bd
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -31,25 +31,10 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         ),
         'U' => 
         array (
-            'UPS\\WorldEaseShipmentManagement\\' => 32,
-            'UPS\\UPSTrackAlert\\' => 18,
-            'UPS\\UPSTrackAlertEnhanced\\' => 26,
-            'UPS\\Tracking\\' => 13,
-            'UPS\\TimeInTransit\\' => 18,
             'UPS\\Shipping\\' => 13,
             'UPS\\Rating\\' => 11,
-            'UPS\\QuantumView\\' => 16,
-            'UPS\\PreNotification\\' => 20,
-            'UPS\\Pickup\\' => 11,
-            'UPS\\Paperless\\' => 14,
             'UPS\\OAuthClientCredentials\\' => 27,
             'UPS\\OAuthAuthCode\\' => 18,
-            'UPS\\Locator\\' => 12,
-            'UPS\\LandedCost\\' => 15,
-            'UPS\\GlobalCheckout\\' => 19,
-            'UPS\\DeliveryIntercept\\' => 22,
-            'UPS\\DeliveryDefense\\' => 20,
-            'UPS\\DangerousGoods\\' => 19,
             'UPS\\AddressValidation\\' => 22,
         ),
         'S' => 
@@ -108,6 +93,7 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         'E' => 
         array (
             'Evenement\\' => 10,
+            'Ergebnis\\AgentDetector\\' => 23,
         ),
         'D' => 
         array (
@@ -128,31 +114,6 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         array (
             0 => __DIR__ . '/..' . '/wikimedia/composer-merge-plugin/src',
         ),
-        'UPS\\WorldEaseShipmentManagement\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/WorldEaseShipmentManagement/src',
-            1 => __DIR__ . '/../..' . '/WorldEaseShipmentManagement/test',
-        ),
-        'UPS\\UPSTrackAlert\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/UPSTrackAlert/src',
-            1 => __DIR__ . '/../..' . '/UPSTrackAlert/test',
-        ),
-        'UPS\\UPSTrackAlertEnhanced\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/UPSTrackAlertEnhanced/src',
-            1 => __DIR__ . '/../..' . '/UPSTrackAlertEnhanced/test',
-        ),
-        'UPS\\Tracking\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Tracking/src',
-            1 => __DIR__ . '/../..' . '/Tracking/test',
-        ),
-        'UPS\\TimeInTransit\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/TimeInTransit/src',
-            1 => __DIR__ . '/../..' . '/TimeInTransit/test',
-        ),
         'UPS\\Shipping\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Shipping/src',
@@ -163,26 +124,6 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
             0 => __DIR__ . '/../..' . '/Rating/src',
             1 => __DIR__ . '/../..' . '/Rating/test',
         ),
-        'UPS\\QuantumView\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/QuantumView/src',
-            1 => __DIR__ . '/../..' . '/QuantumView/test',
-        ),
-        'UPS\\PreNotification\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/PreNotification/src',
-            1 => __DIR__ . '/../..' . '/PreNotification/test',
-        ),
-        'UPS\\Pickup\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Pickup/src',
-            1 => __DIR__ . '/../..' . '/Pickup/test',
-        ),
-        'UPS\\Paperless\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Paperless/src',
-            1 => __DIR__ . '/../..' . '/Paperless/test',
-        ),
         'UPS\\OAuthClientCredentials\\' => 
         array (
             0 => __DIR__ . '/../..' . '/OAuthClientCredentials/src',
@@ -192,36 +133,6 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         array (
             0 => __DIR__ . '/../..' . '/OAuthAuthCode/src',
             1 => __DIR__ . '/../..' . '/OAuthAuthCode/test',
-        ),
-        'UPS\\Locator\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Locator/src',
-            1 => __DIR__ . '/../..' . '/Locator/test',
-        ),
-        'UPS\\LandedCost\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/LandedCost/src',
-            1 => __DIR__ . '/../..' . '/LandedCost/test',
-        ),
-        'UPS\\GlobalCheckout\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/GlobalCheckout/src',
-            1 => __DIR__ . '/../..' . '/GlobalCheckout/test',
-        ),
-        'UPS\\DeliveryIntercept\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/DeliveryIntercept/src',
-            1 => __DIR__ . '/../..' . '/DeliveryIntercept/test',
-        ),
-        'UPS\\DeliveryDefense\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/DeliveryDefense/src',
-            1 => __DIR__ . '/../..' . '/DeliveryDefense/test',
-        ),
-        'UPS\\DangerousGoods\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/DangerousGoods/src',
-            1 => __DIR__ . '/../..' . '/DangerousGoods/test',
         ),
         'UPS\\AddressValidation\\' => 
         array (
@@ -384,6 +295,10 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         'Evenement\\' => 
         array (
             0 => __DIR__ . '/..' . '/evenement/evenement/src',
+        ),
+        'Ergebnis\\AgentDetector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ergebnis/agent-detector/src',
         ),
         'Doctrine\\Instantiator\\' => 
         array (
@@ -776,6 +691,12 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         'PHPUnit\\Util\\Xml\\SuccessfulSchemaDetectionResult' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml/SuccessfulSchemaDetectionResult.php',
         'PHPUnit\\Util\\Xml\\ValidationResult' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml/ValidationResult.php',
         'PHPUnit\\Util\\Xml\\Validator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml/Validator.php',
+        'Pdo\\Dblib' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Dblib.php',
+        'Pdo\\Firebird' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Firebird.php',
+        'Pdo\\Mysql' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Mysql.php',
+        'Pdo\\Odbc' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Odbc.php',
+        'Pdo\\Pgsql' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Pgsql.php',
+        'Pdo\\Sqlite' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Sqlite.php',
         'PharIo\\Manifest\\Application' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Application.php',
         'PharIo\\Manifest\\ApplicationName' => __DIR__ . '/..' . '/phar-io/manifest/src/values/ApplicationName.php',
         'PharIo\\Manifest\\Author' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Author.php',
@@ -851,6 +772,7 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'ReflectionConstant' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/ReflectionConstant.php',
         'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
+        'RoundingMode' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/RoundingMode.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'SebastianBergmann\\CliParser\\AmbiguousOptionException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/AmbiguousOptionException.php',
         'SebastianBergmann\\CliParser\\Exception' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/Exception.php',
@@ -1068,9 +990,9 @@ class ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitab8cb9e0671be1f0be64cf8f41d4b7bc::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9d5b26c4b361ac8c49e10b99ed5271bd::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9d5b26c4b361ac8c49e10b99ed5271bd::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9d5b26c4b361ac8c49e10b99ed5271bd::$classMap;
 
         }, null, ClassLoader::class);
     }

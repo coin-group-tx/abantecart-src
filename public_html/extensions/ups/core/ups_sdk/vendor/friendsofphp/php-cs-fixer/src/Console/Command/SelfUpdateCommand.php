@@ -39,12 +39,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'self-update', description: 'Update php-cs-fixer.phar to the latest stable version.')]
 final class SelfUpdateCommand extends Command
 {
-    /** @TODO PHP 8.0 - remove the property */
-    protected static $defaultName = 'self-update';
-
-    /** @TODO PHP 8.0 - remove the property */
-    protected static $defaultDescription = 'Update php-cs-fixer.phar to the latest stable version.';
-
     private NewVersionCheckerInterface $versionChecker;
 
     private ToolInfoInterface $toolInfo;
@@ -56,7 +50,8 @@ final class SelfUpdateCommand extends Command
         ToolInfoInterface $toolInfo,
         PharCheckerInterface $pharChecker
     ) {
-        parent::__construct();
+        parent::__construct('self-update');
+        $this->setDescription('Update php-cs-fixer.phar to the latest stable version.');
 
         $this->versionChecker = $versionChecker;
         $this->toolInfo = $toolInfo;
@@ -106,10 +101,14 @@ final class SelfUpdateCommand extends Command
         }
 
         $currentVersion = $this->getApplication()->getVersion();
-        Preg::match('/^v?(?<major>\d+)\./', $currentVersion, $matches);
-        $currentMajor = (int) $matches['major'];
 
         try {
+            if (Preg::match('/^v?(?<major>\d+)\./', $currentVersion, $matches)) {
+                $currentMajor = (int) $matches['major'];
+            } else {
+                throw new \Exception('Unable to determine major version.');
+            }
+
             $latestVersion = $this->versionChecker->getLatestVersion();
             $latestVersionOfCurrentMajor = $this->versionChecker->getLatestVersionOfMajor($currentMajor);
         } catch (\Exception $exception) {
@@ -147,6 +146,7 @@ final class SelfUpdateCommand extends Command
             $remoteTag = $latestVersionOfCurrentMajor;
         }
 
+        \assert(isset($_SERVER['argv']));
         $localFilename = $_SERVER['argv'][0];
         $realPath = realpath($localFilename);
         if (false !== $realPath) {

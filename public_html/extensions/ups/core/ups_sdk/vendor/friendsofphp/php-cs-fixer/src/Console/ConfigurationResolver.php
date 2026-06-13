@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace PhpCsFixer\Console;
 
+use Ergebnis\AgentDetector;
 use PhpCsFixer\Cache\CacheManagerInterface;
 use PhpCsFixer\Cache\Directory;
 use PhpCsFixer\Cache\DirectoryInterface;
@@ -331,19 +332,9 @@ final class ConfigurationResolver
     public function getDirectory(): DirectoryInterface
     {
         if (null === $this->directory) {
-            $path = $this->getCacheFile();
-            if (null === $path) {
-                $absolutePath = $this->cwd;
-            } else {
-                $filesystem = new Filesystem();
+            $cwd = realpath($this->cwd);
 
-                $absolutePath = $filesystem->isAbsolutePath($path)
-                    ? $path
-                    : $this->cwd.\DIRECTORY_SEPARATOR.$path;
-                $absolutePath = \dirname($absolutePath);
-            }
-
-            $this->directory = new Directory($absolutePath);
+            $this->directory = new Directory(false !== $cwd ? $cwd : $this->cwd);
         }
 
         return $this->directory;
@@ -689,11 +680,21 @@ final class ConfigurationResolver
             $this->format = $parts[0];
 
             if ('@auto' === $this->format) {
-                $this->format = $parts[1] ?? 'txt';
-
                 if (filter_var(getenv('GITLAB_CI'), \FILTER_VALIDATE_BOOL)) {
                     $this->format = 'gitlab';
+
+                    return $this->format;
                 }
+
+                $agentDetector = new AgentDetector\Detector();
+
+                if ($agentDetector->isAgentPresent(array_fill_keys(array_keys(getenv()), ''))) {
+                    $this->format = 'json';
+
+                    return $this->format;
+                }
+
+                $this->format = $parts[1] ?? 'txt';
             }
         }
 
@@ -719,18 +720,6 @@ final class ConfigurationResolver
         }
 
         return $this->isStdIn;
-    }
-
-    /**
-     * @template T
-     *
-     * @param iterable<T> $iterable
-     *
-     * @return \Traversable<T>
-     */
-    private function iterableToTraversable(iterable $iterable): \Traversable
-    {
-        return \is_array($iterable) ? new \ArrayIterator($iterable) : $iterable;
     }
 
     /**
@@ -952,7 +941,7 @@ final class ConfigurationResolver
                 return new \ArrayIterator([]);
             }
 
-            return $this->iterableToTraversable($this->getConfig()->getFinder());
+            return $this->getConfig()->getFinder();
         }
 
         $pathsByType = [
@@ -969,10 +958,16 @@ final class ConfigurationResolver
         }
 
         $nestedFinder = null;
-        $currentFinder = $this->iterableToTraversable($this->getConfig()->getFinder());
+        $currentFinder = $this->getConfig()->getFinder();
 
         try {
-            $nestedFinder = $currentFinder instanceof \IteratorAggregate ? $currentFinder->getIterator() : $currentFinder;
+            $nestedFinder = $currentFinder instanceof \IteratorAggregate
+                ? $currentFinder->getIterator()
+                : (
+                    $currentFinder instanceof \Traversable
+                        ? $currentFinder
+                        : new \ArrayIterator($currentFinder)
+                );
         } catch (\Exception $e) {
         }
 
