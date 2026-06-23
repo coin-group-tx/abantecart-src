@@ -35,10 +35,10 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "wikimedia/composer-merge-plugin": "^2.1.0",
-        "guzzlehttp/guzzle": "7.9.3",
-        "guzzlehttp/psr7": "2.10.2",
-        "symfony/process": "v7.3.11",
-        "symfony/http-client": "v7.3.11"
+        "guzzlehttp/guzzle": "7.12.1",
+        "guzzlehttp/psr7": "2.12.1",
+        "symfony/process": "v7.4.13",
+        "symfony/http-client": "v7.4.13"
     },
     "extra": {
         "merge-plugin": {

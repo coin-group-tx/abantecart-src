@@ -1,1 +1,0 @@
-This folder is for storing offline tax content. 
