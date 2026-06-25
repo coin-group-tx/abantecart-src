@@ -96,6 +96,9 @@ class ControllerCommonHead extends AController
         if ($this->config->get('config_google_analytics_code')) {
             $this->view->assign('google_analytics_code', trim($this->config->get('config_google_analytics_code')));
         }
+        if ($this->config->get('config_google_tag_manager_id')) {
+            $this->view->assign('google_tag_manager', trim($this->config->get('config_google_tag_manager_id')));
+        }
 
         $this->view->assign('icon', $iconUri);
         $this->view->assign('lang', $this->language->get('code'));

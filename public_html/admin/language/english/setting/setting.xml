@@ -1147,4 +1147,8 @@
 		<key>entry_unauth_customer</key>
 		<value><![CDATA[Allow returning customers to browse:<br /><span class="help">Unauthenticated customers returning to the site will be able to browse products, add to cart, and wishlist.</span>]]></value>
 	</definition>
+	<definition>
+		<key>entry_google_tag_manager</key>
+		<value><![CDATA[Google Tag Manager ID:<br /><span class="help">Example: GTM-XXXXXXX</span>]]></value>
+	</definition>
 </definitions>

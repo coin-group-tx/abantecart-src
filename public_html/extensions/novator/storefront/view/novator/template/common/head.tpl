@@ -27,9 +27,18 @@ if ($google_analytics_code) { ?>
         <?php echo  $this->getHookVar('ga_post'); ?>
     </script>
     <?php
-} ?>
+}
+if ($google_tag_manager) { ?>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',<?php js_echo($google_tag_manager);?>);</script>
+    <!-- End Google Tag Manager -->
+<?php }
 
-<?php if ( is_file( DIR_RESOURCE . $icon ) ) {  ?>
+if ( is_file( DIR_RESOURCE . $icon ) ) {  ?>
 <link href="resources/<?php echo $icon; ?>" type="<?php echo getMimeType(DIR_RESOURCE . $icon)?>" rel="icon" />
 <?php } ?>
 

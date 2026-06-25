@@ -2,7 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="<?php echo $direction; ?>" lang="<?php echo $lang; ?>" xml:lang="<?php echo $lang; ?>" <?php echo $this->getHookVar('hk_html_attribute'); ?>>
 <head><?php	echo $head; ?></head>
 <body class="<?php echo str_replace("/", "-", $this->request->get['rt']) ?: 'index-home'; ?>">
-<?php echo $this->getHookVar('top_page'); ?>
+<?php
+if ($google_tag_manager) { ?>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id="<?php echo htmlspecialchars($google_tag_manager, ENT_QUOTES, 'UTF-8'); ?>
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <?php
+}
+echo $this->getHookVar('top_page'); ?>
 
 <div class="container-fixed" style="max-width: <?php echo $layout_width; ?>">
 
