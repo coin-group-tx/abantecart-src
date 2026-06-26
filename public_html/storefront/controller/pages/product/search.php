@@ -188,7 +188,7 @@ class ControllerPagesProductSearch extends AController
                             : false;
                         $special = false;
                         $discount = $promotion->getProductDiscount($productId);
-
+                        $specialNum = 0;
                         if ($discount) {
                             $priceNum = $discount;
                         } else {
