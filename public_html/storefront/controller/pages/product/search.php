@@ -186,9 +186,8 @@ class ControllerPagesProductSearch extends AController
                         $rating = $this->config->get('display_reviews')
                             ? $this->model_catalog_review->getAverageRating($productId)
                             : false;
-                        $special = false;
+                        $special = $specialNum = false;
                         $discount = $promotion->getProductDiscount($productId);
-                        $specialNum = 0;
                         if ($discount) {
                             $priceNum = $discount;
                         } else {

@@ -167,7 +167,7 @@ class ControllerPagesProductManufacturer extends AController
                     $productId = $result['product_id'];
                     $thumbnail = $thumbnails[$productId];
                     $rating = $products_info[$productId]['rating'];
-                    $special = false;
+                    $special = $specialNum = false;
                     $discount = $products_info[$productId]['discount'];
 
                     if ($discount) {

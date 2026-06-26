@@ -121,7 +121,7 @@ class ControllerPagesProductCollection extends AController
                 $productId = $result['product_id'];
                 $thumbnail = $thumbnails[$productId];
                 $rating = $productsInfo[$productId]['rating'];
-                $special = false;
+                $special = $specialNum = false;
                 $discount = $productsInfo[$productId]['discount'];
 
                 if ($discount) {
