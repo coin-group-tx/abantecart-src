@@ -5,7 +5,7 @@
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2025 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
  *   License details are bundled with this package in the file LICENSE.txt.
@@ -111,7 +111,7 @@ class ControllerPagesSettingSetting extends AController
         }
 
         $this->data['groups'] = $this->groups;
-        if (isset($get['active']) && strpos($get['active'], '-') !== false) {
+        if (isset($get['active']) && str_contains($get['active'], '-')) {
             $get['active'] = substr($get['active'], 0, strpos($get['active'], '-'));
         }
         $this->data['active'] = isset($get['active']) && in_array($get['active'], $this->data['groups'])
@@ -222,10 +222,7 @@ class ControllerPagesSettingSetting extends AController
         $this->data['common_zone'] = $this->html->getSecureURL('common/zone');
         $this->data['template_image'] = $this->html->getSecureURL('setting/template_image');
 
-        //load tabs controller
-        $tabs_obj = $this->dispatch('pages/setting/setting_tabs', [$this->data]);
-        $this->data['setting_tabs'] = $tabs_obj->dispatchGetOutput();
-        unset($tabs_obj);
+        $this->buildTabs($group);
 
         $this->view->assign('form_store_switch', $this->html->getStoreSwitcher());
         $this->view->assign('help_url', $this->gen_help_url($this->data['active']));
@@ -346,11 +343,7 @@ class ControllerPagesSettingSetting extends AController
 
         $grid_settings['search_form'] = true;
 
-        //load tabs controller
-        $this->data['active'] = 'all';
-        $tabs_obj = $this->dispatch('pages/setting/setting_tabs', [$this->data]);
-        $this->data['setting_tabs'] = $tabs_obj->dispatchGetOutput();
-        unset($tabs_obj);
+        $this->buildTabs('all');
 
         $grid = $this->dispatch('common/listing_grid', [$grid_settings]);
         $this->view->assign('listing_grid', $grid->dispatchGetOutput());
@@ -805,5 +798,30 @@ class ControllerPagesSettingSetting extends AController
             phpinfo();
         }
         exit;
+    }
+
+    protected function buildTabs(string $active)
+    {
+        $this->data['groups'] = $this->groups;
+        array_unshift($this->data['groups'], 'all');
+        $tabs = [];
+        foreach ($this->data['groups'] as $k => $group) {
+            $tabs[$group] = [
+                'name'       => $group,
+                'text'       => $this->language->get('tab_'.$group),
+                'href'       => $this->html->getSecureURL('setting/setting/'.$group, '&store_id='.$this->data['store_id']),
+                'active'     => $group == $active,
+                'sort_order' => $k,
+            ];
+        }        
+        
+        $obj = $this->dispatch(
+            'responses/common/tabs',
+            [
+                'setting/setting',
+                ['tabs' => $tabs],
+            ]
+        );
+        $this->data['tabs'] = $obj->dispatchGetOutput();
     }
 }

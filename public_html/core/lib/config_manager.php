@@ -1,11 +1,10 @@
-<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
-/*
+<?php /*
  *   $Id$
  *
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2025 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
  *   License details are bundled with this package in the file LICENSE.txt.
@@ -16,7 +15,7 @@
  *    Do not edit or add to this file if you wish to upgrade AbanteCart to newer
  *    versions in the future. If you wish to customize AbanteCart for your
  *    needs, please refer to http://www.AbanteCart.com for more information.
- */
+ */ /** @noinspection PhpMultipleClassDeclarationsInspection */
 if (!defined('DIR_CORE')) {
     header('Location: static_pages/');
 }
@@ -101,6 +100,7 @@ class AConfigManager
      */
     public function getFormFields($group, $form, $data)
     {
+        $this->data['fields'] = [];
         /** @see _build_form_details() */
         /** @see _build_form_general() */
         /** @see _build_form_checkout() */
@@ -110,11 +110,10 @@ class AConfigManager
         /** @see _build_form_api() */
         /** @see _build_form_system() */
         $method_name = "_build_form_" . $group;
-        if (!method_exists($this, $method_name)) {
-            return [];
+        if (method_exists($this, $method_name)) {
+            $this->data['fields'] = $this->$method_name($form, $data);
         }
-
-        $this->data['fields'] = $this->$method_name($form, $data);
+        
         $this->extensions->hk_ProcessData($this, $method_name, $data);
         return $this->data['fields'];
     }
