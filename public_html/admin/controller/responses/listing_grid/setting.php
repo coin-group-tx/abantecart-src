@@ -1,21 +1,22 @@
 <?php
+
 /*
  *   $Id$
  *
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2024 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
- *   License details is bundled with this package in the file LICENSE.txt.
+ *   License details are bundled with this package in the file LICENSE.txt.
  *   It is also available at this URL:
  *   <http://www.opensource.org/licenses/OSL-3.0>
  *
  *  UPGRADE NOTE:
  *    Do not edit or add to this file if you wish to upgrade AbanteCart to newer
  *    versions in the future. If you wish to customize AbanteCart for your
- *    needs please refer to http://www.AbanteCart.com for more information.
+ *    needs, please refer to http://www.AbanteCart.com for more information.
  */
 if (!defined('DIR_CORE') || !IS_ADMIN) {
     header('Location: static_pages/');
@@ -42,7 +43,7 @@ class ControllerResponsesListingGridSetting extends AController
         $this->loadModel('setting/setting');
 
         //Prepare filter config
-        $grid_filter_params = array_merge(['alias', 'group', 'key'], (array)$this->data['grid_filter_params']);
+        $grid_filter_params = array_merge(['alias', 'group', 'key'], (array) $this->data['grid_filter_params']);
         $filter_grid = new AFilter(['method' => 'post', 'grid_filter_params' => $grid_filter_params]);
 
         $total = $this->model_setting_setting->getTotalSettings($filter_grid->getFilterData());
@@ -62,18 +63,19 @@ class ControllerResponsesListingGridSetting extends AController
                 && !is_int(strpos($result['key'], 'level'))
             ) {
                 $value = $this->html->buildCheckbox([
-                    'name'  => '',
-                    'value' => $result['value'],
-                    'style' => 'btn_switch disabled',
-                    'attr'  => 'readonly="true"',
-                ]);
+                                                        'name'  => '',
+                                                        'value' => $result['value'],
+                                                        'style' => 'btn_switch disabled',
+                                                        'attr'  => 'readonly="true"',
+                                                    ]);
             } else {
                 $value = $result['value'];
             }
 
             $response->rows[$i]['id'] = $result['group'] . '-' . $result['key'] . '-' . $result['store_id'];
             if (in_array($result['group'], ['appearance', 'im'])) {
-                $response->userdata->href[$response->rows[$i]['id']] = $this->html->getSecureURL('setting/setting/' . $result['group']);
+                $response->userdata->href[$response->rows[$i]['id']] =
+                    $this->html->getSecureURL('setting/setting/' . $result['group']);
             }
             $response->rows[$i]['cell'] = [
                 $result['alias'],
@@ -104,7 +106,8 @@ class ControllerResponsesListingGridSetting extends AController
 
         if (!$this->user->canModify('listing_grid/setting')) {
             $error = new AError('');
-            $error->toJSONResponse('NO_PERMISSIONS_402',
+            $error->toJSONResponse(
+                'NO_PERMISSIONS_402',
                 [
                     'error_text'  => sprintf($this->language->get('error_permission_modify'), 'listing_grid/setting'),
                     'reset_value' => true,
@@ -118,11 +121,14 @@ class ControllerResponsesListingGridSetting extends AController
         if (isset($this->request->get['group'])) {
             $group = $this->request->get['group'];
             //for appearance settings per template
-            if ($this->request->get['group'] == 'appearance' && has_value($this->request->get['tmpl_id']) && $this->request->get['tmpl_id'] != 'default') {
+            if ($this->request->get['group'] == 'appearance'
+                && has_value($this->request->get['tmpl_id'])
+                && $this->request->get['tmpl_id'] != 'default'
+            ) {
                 $group = $this->request->get['tmpl_id'];
             }
 
-            //request sent from edit form. ID in url
+            //request sent from the edit form. ID in url
             foreach ($this->request->post as $key => $value) {
                 $err = $this->_validateField($group, $key, $value);
                 if (!empty($err)) {
@@ -138,7 +144,7 @@ class ControllerResponsesListingGridSetting extends AController
                 }
 
                 //when change base currency for default store also change values for all currencies in database before saving
-                if (!(int)$this->request->get['store_id']
+                if (!(int) $this->request->get['store_id']
                     && has_value($data['config_currency'])
                     && $data['config_currency'] != $this->config->get('config_currency')
                 ) {
@@ -152,7 +158,6 @@ class ControllerResponsesListingGridSetting extends AController
                     ['merchant_username' => $this->user->getUserName()]
                 );
             }
-            return;
         }
 
         //update controller data
