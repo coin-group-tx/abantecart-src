@@ -143,7 +143,7 @@
                         echo '<div id="settingFrm_config_'.$name.'_fld">'.$field.'</div>';
                         break;
                     default:
-                        echo $field;
+                        echo $field->type == 'html_template' ? $field->html : $field;
                 } ?>
             </div>
             <?php if (!empty($error[$name])) { ?>
