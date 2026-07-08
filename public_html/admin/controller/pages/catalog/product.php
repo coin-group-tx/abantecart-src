@@ -1,22 +1,21 @@
-<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
-/*
+<?php /*
  *   $Id$
  *
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2025 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
- *   License details is bundled with this package in the file LICENSE.txt.
+ *   License details are bundled with this package in the file LICENSE.txt.
  *   It is also available at this URL:
  *   <http://www.opensource.org/licenses/OSL-3.0>
  *
  *  UPGRADE NOTE:
  *    Do not edit or add to this file if you wish to upgrade AbanteCart to newer
  *    versions in the future. If you wish to customize AbanteCart for your
- *    needs please refer to http://www.AbanteCart.com for more information.
- */
+ *    needs, please refer to http://www.AbanteCart.com for more information.
+ */ /** @noinspection PhpMultipleClassDeclarationsInspection */
 if (!defined('DIR_CORE') || !IS_ADMIN) {
     header('Location: static_pages/');
 }
@@ -346,6 +345,19 @@ class ControllerPagesCatalogProduct extends AController
         if ($search_params['manufacturer']) {
             $title .= ($title ? ', ' : '') . $this->data['brands'][$search_params['manufacturer']];
         }
+        
+        $allSuppliers = ['' => $this->language->get('text_select_supplier')]
+            + array_column(ASupplier::getSuppliers(), 'name', 'code');
+        $grid_search_form['fields']['supplier_code'] = $form->getFieldHtml(
+            [
+                'type'        => 'selectbox',
+                'name'        => 'supplier_code',
+                'options'     => $allSuppliers,
+                'style'       => 'chosen',
+                'value'       => $search_params['supplier_code'],
+                'placeholder' => $this->language->get('text_select_supplier'),
+            ]
+        );        
 
         $this->document->addBreadcrumb(
             [

@@ -2371,7 +2371,11 @@ class ModelCatalogProduct extends Model
             $sql .= ' WHERE 1=1 ';
 
             if ($filter['manufacturer']) {
-                $sql .= " AND  p.manufacturer_id = " . (int)$filter['manufacturer'];
+                $sql .= " AND p.manufacturer_id = " . (int)$filter['manufacturer'];
+            }
+
+            if ($filter['supplier_code']) {
+                $sql .= " AND p.supplier_code = '" . $this->db->escape($filter['supplier_code']) . "'";
             }
 
             if (!empty($data['subsql_filter'])) {
