@@ -5,17 +5,17 @@
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2024 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
- *   License details is bundled with this package in the file LICENSE.txt.
+ *   License details are bundled with this package in the file LICENSE.txt.
  *   It is also available at this URL:
  *   <http://www.opensource.org/licenses/OSL-3.0>
  *
  *  UPGRADE NOTE:
  *    Do not edit or add to this file if you wish to upgrade AbanteCart to newer
  *    versions in the future. If you wish to customize AbanteCart for your
- *    needs please refer to http://www.AbanteCart.com for more information.
+ *    needs, please refer to http://www.AbanteCart.com for more information.
  */
 if (!defined('DIR_CORE') || !IS_ADMIN) {
     header('Location: static_pages/');
@@ -37,7 +37,7 @@ class ControllerPagesToolErrorLog extends AController
         }
 
         if (isset($this->session->data['error'])) {
-            $this->data['error'] = $this->session->data['error'];
+            $this->data['error_warning'] = $this->session->data['error'];
             unset($this->session->data['error']);
         } else {
             $this->data['error'] = '';
@@ -133,7 +133,8 @@ class ControllerPagesToolErrorLog extends AController
         }
 
         $this->data['log'] = $data;
-
+        $this->data['download_url'] = $this->html->getSecureURL('tool/error_log/download');
+        
         $this->view->batchAssign($this->data);
         $this->processTemplate('pages/tool/error_log.tpl');
 
@@ -162,5 +163,43 @@ class ControllerPagesToolErrorLog extends AController
 
         //update controller data
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
+    }
+
+    public function download()
+    {
+        //init controller data
+        $this->extensions->hk_InitData($this, __FUNCTION__);
+
+        if (!$this->user->canAccess('tool/error_log')) {
+            $this->dispatch('error/permission');
+            return;
+        }
+
+        $this->loadLanguage('tool/error_log');
+
+        // Sanitize filename consistently with main() method
+        $filename = (string)$this->request->get['filename'];
+        $filename = str_replace(['../', '..\\', '\\'], '', $filename);
+
+        $file = DIR_LOGS . $filename;
+
+        if (!is_file($file) || !filesize($file)) {
+            $this->session->data['error'] = 'File not found or zero-length.';
+            redirect($this->html->getSecureURL('tool/error_log', '&' . http_build_query(['filename' => $filename])));
+            return;
+        }
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename(str_replace(DS,'_',$filename)));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        ob_end_clean();
+        flush();
+        readfile($file);
+        exit;
     }
 }

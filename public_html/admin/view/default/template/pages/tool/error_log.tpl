@@ -1,17 +1,27 @@
-<?php include($tpl_common_dir . 'action_confirm.tpl'); ?>
+<?php include($tpl_common_dir . 'action_confirm.tpl'); 
+
+?>
 
 <div class="tab-content">
 	<div class="panel-heading">
-        <div class="primary_content_actions pull-left">
+        <div class="primary_content_actions pull-left">            
             <?php if($log_list){ ?>
+                <div class="input-group-prepend">
+                    <?php
+                    echo $this->html->buildElement(
+                        [
+                            'type'  => 'button',
+                            'name'  => 'download',
+                            'icon'  => 'fa fa-download',
+                            'title' => $this->language->get('button_download'),
+                            'style' => 'btn btn-info',                            
+                        ]
+                    );
+                    ?>
+                </div>
                 <div class="btn-group">
                     <?php echo $log_list; ?>
                 </div>
-                <script type="text/javascript">
-                    $('select#filename').on('change', function(){
-                        location = '<?php echo $main_url; ?>&filename='+ $(this).val();
-                    });
-                </script>
                 <?php
             }
             if($button_clear){ ?>
@@ -39,4 +49,19 @@
 		<?php } ?>
 		</div>
 	</div>
-</div><!-- <div class="tab-content"> -->
+</div>
+<script type="text/javascript">
+    $('select#filename').on('change', function(){
+        location = '<?php echo $main_url; ?>&filename='+ $(this).val();
+    });
+    
+    $('#download').on('click', function(e){
+        e.preventDefault();
+        const filename = $('select#filename').val();
+        if(filename){
+            location = '<?php echo $download_url; ?>&filename='+ filename;
+        } else {
+            warning_alert('Please select a file to download');
+        }
+    });    
+</script>
