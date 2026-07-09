@@ -111,7 +111,7 @@ class ControllerBlocksSpecial extends AController
             $in_stock = false;
             $no_stock_text = $this->language->get('text_out_of_stock');
             $total_quantity = 0;
-            $stock_checkout = $result['stock_checkout'] === ''
+            $stock_checkout = (string)$result['stock_checkout'] === ''
                 ? $this->config->get('config_stock_checkout')
                 : $result['stock_checkout'];
             if ($stock_info[$productId]['subtract']) {

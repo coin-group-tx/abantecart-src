@@ -210,7 +210,7 @@ class ControllerPagesProductManufacturer extends AController
                     $track_stock = false;
                     $in_stock = false;
                     $no_stock_text = $this->language->get('text_out_of_stock');
-                    $stock_checkout = $result['stock_checkout'] === ''
+                    $stock_checkout = (string)$result['stock_checkout'] === ''
                         ? $this->config->get('config_stock_checkout')
                         : $result['stock_checkout'];
                     $total_quantity = 0;
