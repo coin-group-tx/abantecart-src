@@ -330,7 +330,6 @@ class ModelToolGlobalSearch extends Model
                         FROM " . $this->db->table("manufacturers") . " 
                         WHERE name LIKE '%" . $needle . "%' 
                                 OR name LIKE '%" . $needle2 . "%'
-                                OR supplier_id like '%".$needle."%'
                         LIMIT " . $offset . "," . $rows_count;
                 $result = $this->db->query($sql);
                 $result = $result->rows;
