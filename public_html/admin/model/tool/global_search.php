@@ -228,14 +228,15 @@ class ModelToolGlobalSearch extends Model
                 $result = $result->rows;
                 break;
             case 'products' :
-
                 $sql = "SELECT DISTINCT " . $this->db->getSqlCalcTotalRows() . " a.product_id, b.name as title, b.name as text
                         FROM " . $this->db->table("products") . " a
                         LEFT JOIN " . $this->db->table("product_descriptions") . " b 
                             ON (b.product_id = a.product_id 
                                 AND b.language_id IN (" . (implode(",", $search_languages)) . "))
-                        WHERE a.model LIKE '%" . $needle . "%' 
-                            OR a.sku LIKE '%" . $needle . "%' ";
+                        WHERE a.product_id = ".(int)$needle." 
+                                OR a.supplier_id like '%".$needle."%' 
+                                OR a.model LIKE '%" . $needle . "%' 
+                                OR a.sku LIKE '%" . $needle . "%' ";
                 if ($needle != $needle2) {
                     $sql .= " OR a.model LIKE '%" . $needle2 . "%' OR a.sku LIKE '%" . $needle2 . "%' ";
                 }
@@ -327,8 +328,9 @@ class ModelToolGlobalSearch extends Model
             case "manufacturers" :
                 $sql = "SELECT " . $this->db->getSqlCalcTotalRows() . " manufacturer_id, `name` as text, `name` as title
                         FROM " . $this->db->table("manufacturers") . " 
-                        WHERE (name LIKE '%" . $needle . "%' 
-                                OR name LIKE '%" . $needle2 . "%' )
+                        WHERE name LIKE '%" . $needle . "%' 
+                                OR name LIKE '%" . $needle2 . "%'
+                                OR supplier_id like '%".$needle."%'
                         LIMIT " . $offset . "," . $rows_count;
                 $result = $this->db->query($sql);
                 $result = $result->rows;
