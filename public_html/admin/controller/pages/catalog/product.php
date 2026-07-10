@@ -1041,7 +1041,7 @@ class ControllerPagesCatalogProduct extends AController
             [
                 'type'     => 'selectbox',
                 'name'     => 'stock_status_id',
-                'value'    => (int)($this->data['stock_status_id'] ?: $this->config->get('config_stock_status_id')),
+                'value'    => (int)($this->data['stock_status_id'] ?? $this->config->get('config_stock_status_id')),
                 'options'  => $this->data['stock_statuses'],
                 'help_url' => $this->gen_help_url('product_inventory'),
                 'style'    => 'small-field',
