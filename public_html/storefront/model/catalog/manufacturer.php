@@ -81,9 +81,14 @@ class ModelCatalogManufacturer extends Model
         if ($data['filter']['manufacturer_id']) {
             $sql .= " AND m.manufacturer_id IN (" . implode(',', $data['filter']['manufacturer_id']) . ")";
         }
-        $sql .= " WHERE m2s.store_id = '" . $store_id . "'"
-            . " ORDER BY sort_order, LCASE(m.name) ASC";
-        $sql .= " LIMIT " . $data['start'] . ", " . $data['limit'];
+        $sql .= " WHERE m2s.store_id = '" . $store_id . "'";
+
+        if (!empty($data['subsql_filter'])) {
+            $sql .= " AND " . $data['subsql_filter'];
+        }
+
+        $sql .= 'ORDER BY sort_order, LCASE(m.name) ASC '.PHP_EOL
+             .'LIMIT ' . (int)$data['start'] . ', ' . (int)$data['limit'];
 
         $query = $this->db->query($sql);
         $output = $query->rows;
@@ -99,10 +104,12 @@ class ModelCatalogManufacturer extends Model
      */
     public function getManufacturerByProductId($product_id)
     {
-        $query = $this->db->query("SELECT *
-										FROM " . $this->db->table("manufacturers") . " m
-										RIGHT JOIN " . $this->db->table("products") . " p ON (m.manufacturer_id = p.manufacturer_id)
-										WHERE p.product_id = '" . (int)$product_id . "'");
+        $query = $this->db->query(
+            "SELECT *
+            FROM " . $this->db->table("manufacturers") . " m
+            RIGHT JOIN " . $this->db->table("products") . " p 
+                ON (m.manufacturer_id = p.manufacturer_id)
+            WHERE p.product_id = '" . (int)$product_id . "'");
         return $query->rows;
     }
 

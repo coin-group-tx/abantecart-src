@@ -87,12 +87,13 @@ class ModelCatalogCollection extends Model
             /** @var ModelCatalogProduct $mdl */
             $mdl = $this->load->model('catalog/product');
             $result = $mdl->getCollectionProducts(
-                $collection['conditions'],
-                $sort ? : 'date_modified',
-                $order ? : 'DESC',
-                0,
-                $limit,
-                $collectionId
+                [
+                    'collectionData' => $collection,
+                    'sort' => $sort ? : 'date_modified',
+                    'order' => $order ? : 'DESC',
+                    'start' => 0,
+                    'limit' => $limit
+                ]
             );
             return $result['items'];
         }
@@ -118,6 +119,17 @@ class ModelCatalogCollection extends Model
     {
         /** @var ModelCatalogProduct $mdl */
         $mdl = $this->load->model('catalog/product');
-        return $mdl->getCollectionProducts($conditions, $sort, $order, $start, $limit, $collectionId);
+        return $mdl->getCollectionProducts(
+            [
+                'collectionData' => [
+                    'id' => $collectionId,
+                    'conditions' => $conditions   
+                ],
+                'sort' => $sort ? : 'date_modified',
+                'order' => $order ?: 'DESC',
+                'start' => $start,
+                'limit' => $limit
+            ]
+        );
     }
 }

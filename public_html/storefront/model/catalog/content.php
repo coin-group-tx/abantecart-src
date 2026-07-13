@@ -82,6 +82,10 @@ class ModelCatalogContent extends Model
                 WHERE i.status = '1' 
                     AND COALESCE(i2s.store_id,0) = '".(int)$this->config->get('config_store_id')."'
                     AND COALESCE(i.publish_date, '1970-01-01') < NOW() AND COALESCE(i.expire_date, NOW()) >= NOW()";
+
+            if (!empty($data['subsql_filter'])) {
+                $sql .= " AND " . $data['subsql_filter'];
+            }
             //filter result by given ids array
             if ($data['filter_ids']) {
                 $ids = array_unique(array_map('intval', (array)$data['filter_ids']));
@@ -134,6 +138,10 @@ class ModelCatalogContent extends Model
                     AND COALESCE(c.publish_date, '1970-01-01') < now() 
                     AND COALESCE(c.expire_date, now()) >= now()
                     AND c.status = '1'";
+
+        if (!empty($data['subsql_filter'])) {
+            $sql .= " AND " . $data['subsql_filter'];
+        }
 
         if ($filter['parent_id']) {
             $sql .= " AND c.parent_content_id=" . (int)$filter['parent_id'] . " ";

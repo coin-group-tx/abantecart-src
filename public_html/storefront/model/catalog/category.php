@@ -102,6 +102,11 @@ class ModelCatalogCategory extends Model
                 LEFT JOIN " . $this->db->table("categories_to_stores") . " c2s 
                     ON (c.category_id = c2s.category_id)
                 WHERE c2s.store_id = '" . $store_id . "' AND c.status = 1 ";
+
+        if (!empty($data['subsql_filter'])) {
+            $sql .= " AND " . $data['subsql_filter'];
+        }
+
         if($data['filter']['category_id']){
             $sql .= " AND c.category_id IN (" . implode(',', array_map("intval",(array)$data['filter']['category_id'])) . ")";
         }else {

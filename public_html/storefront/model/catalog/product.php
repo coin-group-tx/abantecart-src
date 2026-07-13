@@ -2128,10 +2128,16 @@ class ModelCatalogProduct extends Model
      * @return array
      * @throws AException
      */
-    public function getCollectionProducts(array $conditions, $sort, $order, $start, $limit, $collectionId)
+    public function getCollectionProducts( array $data)
     {
+        $collectionId = $data['collectionData']['id'];
         $storeId = (int) $this->config->get('config_store_id');
         $languageId = (int) $this->config->get('storefront_language_id');
+        $conditions = $data['collectionData']['conditions'];
+        $sort = $data['sort'];
+        $order = $data['order'];
+        $start = $data['start'];
+        $limit = $data['limit'];
         $cache_key = 'collection.listing.products_collection.' . (int) $collectionId
             . '.store_' . $storeId . '_lang_' . $languageId
             . '_' . md5(var_export(func_get_args(), true));
@@ -2225,11 +2231,9 @@ class ModelCatalogProduct extends Model
                 }
             }
 
-            $query = "SELECT DISTINCT " . implode(',', $arSelect)
-                . " FROM " . $this->db->table('products') . " p ";
-            foreach ($arJoins as $arJoin) {
-                $query .= ' ' . $arJoin;
-            }
+            $query = "SELECT DISTINCT " . implode(',', $arSelect).PHP_EOL
+                . " FROM " . $this->db->table('products') . " p ".PHP_EOL;
+            $query .= implode(PHP_EOL, $arJoins).PHP_EOL;
 
             if (empty($arWhere)) {
                 return $result;
@@ -2237,7 +2241,7 @@ class ModelCatalogProduct extends Model
 
             $query .= " WHERE " . implode(($relation['if'] == 'any') ? ' OR ' : ' AND ', $arWhere);
             if (IS_ADMIN !== true) {
-                $query .= " AND p.status = 1 AND p.date_available <= NOW() ";
+                $query .= " AND p.status = 1 AND p.date_available <= NOW() " . PHP_EOL;
             }
 
             $allowedSort = [

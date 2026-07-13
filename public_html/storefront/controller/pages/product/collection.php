@@ -93,12 +93,13 @@ class ControllerPagesProductCollection extends AController
         $collectionProducts = [];
         if ($collectionInfo['conditions']) {
             $collectionProducts = $pMdl->getCollectionProducts(
-                $collectionInfo['conditions'],
-                $sort,
-                $order,
-                $start,
-                $limit,
-                $collectionId
+                [
+                    'collectionData' => $collectionInfo,
+                    'sort' => $sort,
+                    'order' => $order,
+                    'start' => $start,
+                    'limit' => $limit
+                ]
             );
         }
         $resource = new AResource('image');
