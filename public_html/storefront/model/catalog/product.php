@@ -2128,7 +2128,7 @@ class ModelCatalogProduct extends Model
      * @return array
      * @throws AException
      */
-    public function getCollectionProducts( array $data)
+    public function getCollectionProducts(array $data)
     {
         $collectionId = $data['collectionData']['id'];
         $storeId = (int) $this->config->get('config_store_id');
@@ -2231,17 +2231,20 @@ class ModelCatalogProduct extends Model
                 }
             }
 
-            $query = "SELECT DISTINCT " . implode(',', $arSelect).PHP_EOL
-                . " FROM " . $this->db->table('products') . " p ".PHP_EOL;
-            $query .= implode(PHP_EOL, $arJoins).PHP_EOL;
+            $sql = "SELECT DISTINCT " . implode(',', $arSelect) . PHP_EOL
+                . " FROM " . $this->db->table('products') . " p " . PHP_EOL;
+            $sql .= implode(PHP_EOL, $arJoins) . PHP_EOL;
 
             if (empty($arWhere)) {
                 return $result;
             }
 
-            $query .= " WHERE " . implode(($relation['if'] == 'any') ? ' OR ' : ' AND ', $arWhere);
+            $sql .= " WHERE " . implode(($relation['if'] == 'any') ? ' OR ' : ' AND ', $arWhere);
             if (IS_ADMIN !== true) {
-                $query .= " AND p.status = 1 AND p.date_available <= NOW() " . PHP_EOL;
+                $sql .= " AND p.status = 1 AND p.date_available <= NOW() " . PHP_EOL;
+            }
+            if (!empty($data['subsql_filter'])) {
+                $sql .= " AND " . $data['subsql_filter'];
             }
 
             $allowedSort = [
@@ -2258,16 +2261,16 @@ class ModelCatalogProduct extends Model
             ];
 
             if ($allowedSort[$sort]) {
-                $query .= " ORDER BY " . $allowedSort[$sort] . " " . ($order ? : 'ASC');
+                $sql .= " ORDER BY " . $allowedSort[$sort] . " " . ($order ? : 'ASC');
             } else {
-                $query .= " ORDER BY p.date_modified " . ($order ? : 'ASC');
+                $sql .= " ORDER BY p.date_modified " . ($order ? : 'ASC');
             }
 
             if (isset($start) && $limit) {
-                $query .= " LIMIT " . $start . "," . $limit;
+                $sql .= " LIMIT " . $start . "," . $limit;
             }
 
-            $products = $this->db->query($query);
+            $products = $this->db->query($sql);
             $total = $this->db->getTotalNumRows();
 
             if ($products) {
