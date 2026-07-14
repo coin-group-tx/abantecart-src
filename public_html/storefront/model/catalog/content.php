@@ -1,4 +1,5 @@
 <?php
+
 /*
  *   $Id$
  *
@@ -27,15 +28,16 @@ class ModelCatalogContent extends Model
      * @param int $content_id
      * @param int|null $store_id
      * @param int $language_id
+     *
      * @return array
      * @throws AException
      */
     public function getContent($content_id, $store_id = null, $language_id = 0)
     {
-        $content_id = (int)$content_id;
-        $store_id = $store_id ?? (int)$this->config->get('config_store_id');
-        $language_id = $language_id ?: (int)$this->config->get('storefront_language_id');
-        $cache_key = 'content.'.$content_id.'.store_'.$store_id.'_lang_'.$language_id;
+        $content_id = (int) $content_id;
+        $store_id = $store_id ?? (int) $this->config->get('config_store_id');
+        $language_id = $language_id ? : (int) $this->config->get('storefront_language_id');
+        $cache_key = 'content.' . $content_id . '.store_' . $store_id . '_lang_' . $language_id;
         $output = $this->cache->pull($cache_key);
 
         if ($output !== false) {
@@ -43,13 +45,13 @@ class ModelCatalogContent extends Model
         }
 
         $sql = "SELECT DISTINCT i.*, id.*, COALESCE(i.publish_date, i.date_added) as publish_date
-                FROM ".$this->db->table("contents")." i
-                LEFT JOIN ".$this->db->table("content_descriptions")." id
-                    ON (i.content_id = id.content_id AND id.language_id = '".$language_id."')
-                LEFT JOIN ".$this->db->table("contents_to_stores")." i2s
+                FROM " . $this->db->table("contents") . " i
+                LEFT JOIN " . $this->db->table("content_descriptions") . " id
+                    ON (i.content_id = id.content_id AND id.language_id = '" . $language_id . "')
+                LEFT JOIN " . $this->db->table("contents_to_stores") . " i2s
                     ON (i.content_id = i2s.content_id)
-                WHERE i.content_id = '".$content_id."' 
-                    AND COALESCE(i2s.store_id,0) = '".$store_id."' 
+                WHERE i.content_id = '" . $content_id . "' 
+                    AND COALESCE(i2s.store_id,0) = '" . $store_id . "' 
                     AND COALESCE(i.publish_date, '1970-01-01') < now() 
                     AND COALESCE(i.expire_date, now()) >= now()
                 AND i.status = '1'";
@@ -65,22 +67,22 @@ class ModelCatalogContent extends Model
      */
     public function getContents(?array $data = [])
     {
-        $store_id = (int)$this->config->get('config_store_id');
-        $language_id = (int)$this->config->get('storefront_language_id');
-        $cache_key = 'content.all.store_'.$store_id
-            .'_lang_'.$language_id
-            .md5(var_export($data,true));
+        $store_id = (int) ($data['store_id'] ?? $this->config->get('config_store_id'));
+        $language_id = (int) $this->config->get('storefront_language_id');
+        $cache_key = 'content.all.store_' . $store_id
+            . '_lang_' . $language_id
+            . md5(var_export($data, true));
         $output = $this->cache->pull($cache_key);
         if ($output === false) {
             $sql = "SELECT i.*, id.*
-                FROM ".$this->db->table("contents")." i
-                LEFT JOIN ".$this->db->table("content_descriptions")." id
+                FROM " . $this->db->table("contents") . " i
+                LEFT JOIN " . $this->db->table("content_descriptions") . " id
                     ON (i.content_id = id.content_id
-                            AND id.language_id = '".(int)$this->config->get('storefront_language_id')."')
-                LEFT JOIN ".$this->db->table("contents_to_stores")." i2s 
+                            AND id.language_id = '" . (int) $this->config->get('storefront_language_id') . "')
+                LEFT JOIN " . $this->db->table("contents_to_stores") . " i2s 
                     ON (i.content_id = i2s.content_id)
                 WHERE i.status = '1' 
-                    AND COALESCE(i2s.store_id,0) = '".(int)$this->config->get('config_store_id')."'
+                    AND COALESCE(i2s.store_id,0) = '" . $store_id . "'
                     AND COALESCE(i.publish_date, '1970-01-01') < NOW() AND COALESCE(i.expire_date, NOW()) >= NOW()";
 
             if (!empty($data['subsql_filter'])) {
@@ -88,7 +90,7 @@ class ModelCatalogContent extends Model
             }
             //filter result by given ids array
             if ($data['filter_ids']) {
-                $ids = array_unique(array_map('intval', (array)$data['filter_ids']));
+                $ids = array_unique(array_map('intval', (array) $data['filter_ids']));
                 $sql .= " AND i.content_id IN (" . implode(', ', $ids) . ")";
             }
 
@@ -98,7 +100,7 @@ class ModelCatalogContent extends Model
                 $sql .= " ORDER BY i.parent_content_id, i.sort_order, LCASE(id.title) ASC";
             }
             if ($data['limit']) {
-                $sql .= " LIMIT " . (int)$data['limit'];
+                $sql .= " LIMIT " . (int) $data['limit'];
             }
 
             $query = $this->db->query($sql);
@@ -110,16 +112,17 @@ class ModelCatalogContent extends Model
 
     /**
      * @param array $data
+     *
      * @return false|array
      * @throws AException
      */
     public function filterContents($data = [])
     {
-        $language_id = (int)$data['content_language_id'] ?: (int)$this->config->get('storefront_language_id');
+        $language_id = (int) $data['content_language_id'] ? : (int) $this->config->get('storefront_language_id');
         $storeId = $this->config->get('config_store_id');
-        $cacheKey = 'content.get.list.'.md5(var_export($data, true)).$language_id.$storeId;
+        $cacheKey = 'content.get.list.' . md5(var_export($data, true)) . $language_id . $storeId;
         $output = $this->cache->pull($cacheKey);
-        if( $output !== false ){
+        if ($output !== false) {
             return $output;
         }
 
@@ -130,10 +133,10 @@ class ModelCatalogContent extends Model
                 FROM " . $this->db->table('contents') . " c
                 LEFT JOIN " . $this->db->table('contents_to_stores') . " c2s
                     ON c2s.content_id = c.content_id
-                LEFT JOIN ".$this->db->table("content_descriptions")." cd
-                    ON (c.content_id = cd.content_id AND cd.language_id = '". $language_id ."')
-                LEFT JOIN ".$this->db->table("content_tags")." ct 
-                    ON (c.content_id = ct.content_id AND ct.language_id = '". $language_id ."')
+                LEFT JOIN " . $this->db->table("content_descriptions") . " cd
+                    ON (c.content_id = cd.content_id AND cd.language_id = '" . $language_id . "')
+                LEFT JOIN " . $this->db->table("content_tags") . " ct 
+                    ON (c.content_id = ct.content_id AND ct.language_id = '" . $language_id . "')
                 WHERE c2s.store_id = " . $storeId . "
                     AND COALESCE(c.publish_date, '1970-01-01') < now() 
                     AND COALESCE(c.expire_date, now()) >= now()
@@ -144,11 +147,11 @@ class ModelCatalogContent extends Model
         }
 
         if ($filter['parent_id']) {
-            $sql .= " AND c.parent_content_id=" . (int)$filter['parent_id'] . " ";
+            $sql .= " AND c.parent_content_id=" . (int) $filter['parent_id'] . " ";
         }
 
         if ($filter['tag']) {
-            $sql .= " AND LCASE(ct.tag) = '".$this->db->escape(trim($filter['tag']))."' ";
+            $sql .= " AND LCASE(ct.tag) = '" . $this->db->escape(trim($filter['tag'])) . "' ";
         }
 
         $match = $filter['match'] ?? 'exact';
@@ -159,9 +162,9 @@ class ModelCatalogContent extends Model
                 foreach ($keywords as $k => $keyword) {
                     $kw = $this->db->escape(strtolower($keyword), true);
                     $sql .= $k > 0 ? " OR" : "";
-                    $sql .= " (LCASE(cd.title) LIKE '%".$kw."%'";
-                    $sql .= " OR LCASE(cd.description) LIKE '%".$kw."%'";
-                    $sql .= " OR LCASE(cd.content) LIKE '%".$kw."%')";
+                    $sql .= " (LCASE(cd.title) LIKE '%" . $kw . "%'";
+                    $sql .= " OR LCASE(cd.description) LIKE '%" . $kw . "%'";
+                    $sql .= " OR LCASE(cd.content) LIKE '%" . $kw . "%')";
                 }
                 $sql .= " )";
             } else {
@@ -170,17 +173,17 @@ class ModelCatalogContent extends Model
                     foreach ($keywords as $k => $keyword) {
                         $kw = $this->db->escape(strtolower($keyword), true);
                         $sql .= $k > 0 ? " AND" : "";
-                        $sql .= " (LCASE(cd.title) LIKE '%".$kw."%'";
-                        $sql .= " OR LCASE(cd.description) LIKE '%".$kw."%'";
-                        $sql .= " OR LCASE(cd.content) LIKE '%".$kw."%')";
+                        $sql .= " (LCASE(cd.title) LIKE '%" . $kw . "%'";
+                        $sql .= " OR LCASE(cd.description) LIKE '%" . $kw . "%'";
+                        $sql .= " OR LCASE(cd.content) LIKE '%" . $kw . "%')";
                     }
                     $sql .= " )";
                 } else {
                     if ($match == 'exact') {
                         $kw = $this->db->escape(strtolower($filter['keyword']), true);
-                        $sql .= " AND (LCASE(cd.title) LIKE '%".$kw."%'";
-                        $sql .= " OR LCASE(cd.description) LIKE '%".$kw."%'";
-                        $sql .= " OR LCASE(cd.content) LIKE '%".$kw."%')";
+                        $sql .= " AND (LCASE(cd.title) LIKE '%" . $kw . "%'";
+                        $sql .= " OR LCASE(cd.description) LIKE '%" . $kw . "%'";
+                        $sql .= " OR LCASE(cd.content) LIKE '%" . $kw . "%')";
                     }
                 }
             }
@@ -189,33 +192,33 @@ class ModelCatalogContent extends Model
         $sql .= ' GROUP BY c.content_id ';
 
         $sort_data = [
-            'default'       => 'c.sort_order',
-            'name-ASC'      => 'cd.title',
-            'name-DESC'     => 'cd.title',
-            'date-DESC'     => 'COALESCE(c.publish_date, c.date_added)',
-            'date-ASC'      => 'COALESCE(c.publish_date, c.date_added)',
+            'default'   => 'c.sort_order',
+            'name-ASC'  => 'cd.title',
+            'name-DESC' => 'cd.title',
+            'date-DESC' => 'COALESCE(c.publish_date, c.date_added)',
+            'date-ASC'  => 'COALESCE(c.publish_date, c.date_added)',
         ];
 
         if (isset($data['sort']) && in_array($data['sort'], array_keys($sort_data))) {
-            $sql .= " ORDER BY ".$sort_data[$data['sort']];
+            $sql .= " ORDER BY " . $sort_data[$data['sort']];
         } else {
-            $sql .= " ORDER BY ".$sort_data['default'];
+            $sql .= " ORDER BY " . $sort_data['default'];
         }
 
         $parts = explode('-', $data['sort']);
-        $order = strtoupper($parts[1]) ?: 'ASC';
+        $order = strtoupper($parts[1]) ? : 'ASC';
         if (isset($data['order']) && ($data['order'] == 'DESC')) {
             $sql .= " DESC";
         } else {
-            $sql .= " ".($order == 'ASC' ? "ASC" : "DESC");
+            $sql .= " " . ($order == 'ASC' ? "ASC" : "DESC");
         }
 
         if (isset($data['start']) || isset($data['limit'])) {
-            $data['start'] = max($data['start'],0);
+            $data['start'] = max($data['start'], 0);
             if ($data['limit'] < 1) {
                 $data['limit'] = 10;
             }
-            $sql .= " LIMIT ".(int) $data['start'].",".(int) $data['limit'];
+            $sql .= " LIMIT " . (int) $data['start'] . "," . (int) $data['limit'];
         }
         $query = $this->db->query($sql);
         $output = $query->rows;
@@ -241,7 +244,7 @@ class ModelCatalogContent extends Model
         if (!isset($parentId)) {
             return [];
         }
-        $parentId = (int)$parentId;
+        $parentId = (int) $parentId;
         $cacheKey = 'content.children.id.' . $parentId . '.' . preformatTextID($mode);
         $cache = $this->cache->pull($cacheKey);
         if (isset($cache) && $cache !== false) {
@@ -254,8 +257,8 @@ class ModelCatalogContent extends Model
                 FROM " . $this->db->table('contents') . " c
                 LEFT JOIN " . $this->db->table('contents_to_stores') . " c2s
                     ON c2s.content_id = c.content_id
-                WHERE c2s.store_id = " . (int)$storeId . "
-                    AND c.parent_content_id=" . (int)$parentId;
+                WHERE c2s.store_id = " . (int) $storeId . "
+                    AND c.parent_content_id=" . (int) $parentId;
         if ($mode == 'active_only') {
             $sql .= " AND c.status=1";
         }
@@ -263,7 +266,7 @@ class ModelCatalogContent extends Model
         $result = $this->db->query($sql);
         $output = [];
         foreach ($result->rows as $content) {
-            $output[] = (int)$content['content_id'];
+            $output[] = (int) $content['content_id'];
             $output = array_merge($output, $this->getChildrenIDs($content['content_id']));
         }
         $this->cache->push($cacheKey, $output);
@@ -281,31 +284,33 @@ class ModelCatalogContent extends Model
     {
         $cacheKey = 'content.tags.' . $content_id . '.' . $language_id;
         $output = $this->cache->pull($cacheKey);
-        if($output !== false) {
+        if ($output !== false) {
             return $output;
         }
 
         $tag_data = [];
         $query = $this->db->query(
-            "SELECT * FROM ".$this->db->table("content_tags")." WHERE content_id = '".(int)$content_id."'"
+            "SELECT * FROM " . $this->db->table("content_tags") . " WHERE content_id = '" . (int) $content_id . "'"
         );
 
         foreach ($query->rows as $result) {
             $tag_data[$result['language_id']][] = $result['tag'];
         }
-        $output = (array)$tag_data[$language_id];
+        $output = (array) $tag_data[$language_id];
         $this->cache->push($cacheKey, $output);
         return $output;
     }
 
     /**
      * Returns content data for listing blocks
+     *
      * @param array $content_ids
      *
      * @return array
      * @throws AException
      */
-    public function getListingContent($content_ids, $limit){
+    public function getListingContent($content_ids, $limit)
+    {
         $includeIDs = [];
         foreach ($content_ids as $content_id) {
             if ($children = $this->getChildrenIDs($content_id)) {
@@ -318,10 +323,10 @@ class ModelCatalogContent extends Model
         }
         $filter = [
             'filter_ids' => $includeIDs,
-            'limit' => $limit ?: null
+            'limit'      => $limit ? : null,
         ];
 
         $contents = $this->getContents($filter);
-        return  $contents;
+        return $contents;
     }
 }

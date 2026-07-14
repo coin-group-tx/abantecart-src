@@ -402,6 +402,7 @@ class ModelCatalogProduct extends Model
                 LEFT JOIN " . $this->db->table("products_to_stores") . " p2s 
                     ON (p.product_id = p2s.product_id)
                 WHERE p.status = '1'
+                    AND p2s.store_id = '" . $store_id . "'
                     AND p.date_available <= NOW()
                     AND p2s.store_id = '" . $store_id . "'";
 
@@ -1023,7 +1024,8 @@ class ModelCatalogProduct extends Model
                             LEFT JOIN " . $this->db->table("stock_statuses") . " ss
                                 ON (p.stock_status_id = ss.stock_status_id AND ss.language_id = '" . $language_id . "')
                             WHERE p.product_id IN (" . implode(', ', $products) . ")
-                                AND p.status = '1' AND p.date_available <= NOW()
+                                AND p.status = '1' 
+                                AND p.date_available <= NOW()
                                 AND p2s.store_id = '" . $store_id . "'";
                     $product_query = $this->db->query($sql);
 
@@ -1315,7 +1317,8 @@ class ModelCatalogProduct extends Model
         if (!$products) {
             return [];
         }
-        $cacheKey = 'product.productsFromIDs_' . implode('_', $products);
+        $storeId = (int) $this->config->get('config_store_id');
+        $cacheKey = 'product.productsFromIDs_' . implode('_', $products) . $storeId;
         $cachedData = $this->cache->pull($cacheKey);
         if ($cachedData !== false) {
             return $cachedData;
@@ -1327,10 +1330,10 @@ class ModelCatalogProduct extends Model
                         AND pd.language_id = '" . (int) $this->config->get('storefront_language_id') . "')
                 LEFT JOIN " . $this->db->table("products_to_stores") . " p2s 
                     ON (p.product_id = p2s.product_id)
-                WHERE p2s.store_id = '" . (int) $this->config->get('config_store_id') . "'
-                        AND p.product_id IN (" . implode(', ', $products) . ")
-                        AND p.status='1'
-                        AND p.date_available <= NOW()
+                WHERE p2s.store_id = '" . $storeId . "'
+                    AND p.product_id IN (" . implode(', ', $products) . ")
+                    AND p.status='1'
+                    AND p.date_available <= NOW()
                 ORDER BY p.sort_order, p.date_available DESC";
         $query = $this->db->query($sql);
         $result = $query->rows;
@@ -1635,7 +1638,8 @@ class ModelCatalogProduct extends Model
                 LEFT JOIN " . $this->db->table("product_descriptions") . " pd
                     ON (p.product_id = pd.product_id
                             AND pd.language_id = '" . $languageId . "')
-                LEFT JOIN " . $this->db->table("products_to_stores") . " p2s ON (p.product_id = p2s.product_id)
+                LEFT JOIN " . $this->db->table("products_to_stores") . " p2s 
+                    ON (p.product_id = p2s.product_id)
                 LEFT JOIN " . $this->db->table("manufacturers") . " m ON (p.manufacturer_id = m.manufacturer_id)
                 LEFT JOIN " . $this->db->table("stock_statuses") . " ss
                         ON (p.stock_status_id = ss.stock_status_id
@@ -1802,7 +1806,7 @@ class ModelCatalogProduct extends Model
     public function getProducts($data = [], $mode = 'default')
     {
         $language_id = ( int ) $data['content_language_id'] ? : (int) $this->config->get('storefront_language_id');
-        $storeId = $this->config->get('config_store_id');
+        $storeId = (int) $this->config->get('config_store_id');
         $cacheKey = 'product.get.list.' . md5(var_export($data, true)) . $language_id . $storeId;
         $output = $this->cache->pull($cacheKey);
         if ($output !== false) {
@@ -1833,7 +1837,8 @@ class ModelCatalogProduct extends Model
                 $sql .= " LEFT JOIN " . $this->db->table("products_to_categories") . " p2c 
                             ON (p.product_id = p2c.product_id)";
             }
-            $sql .= " WHERE pd.language_id = '" . $language_id . "' 
+            $sql .= PHP_EOL . " WHERE p2s.store_id = '" . $storeId . "' 
+                        AND pd.language_id = '" . $language_id . "' 
                         AND p.date_available <= NOW() 
                         AND p.status = '1' ";
 
@@ -2068,7 +2073,8 @@ class ModelCatalogProduct extends Model
                 LEFT JOIN " . $this->db->table("stock_statuses") . " ss
                     ON (p.stock_status_id = ss.stock_status_id AND ss.language_id = '" . $languageId . "')
                 WHERE p.status = '1'
-                    AND p.date_available <= NOW() AND p2s.store_id = '" . $storeId . "'
+                    AND p.date_available <= NOW() 
+                    AND p2s.store_id = '" . $storeId . "'
                     AND ps.customer_group_id = '" . $customerGroupId . "'
                     AND COALESCE(ps.date_start, '1970-01-01') < NOW()
                     AND COALESCE(ps.date_end, '2200-01-01') > NOW()

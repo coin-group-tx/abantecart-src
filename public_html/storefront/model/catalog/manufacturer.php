@@ -1,4 +1,5 @@
 <?php
+
 /*
  *   $Id$
  *
@@ -31,19 +32,21 @@ class ModelCatalogManufacturer extends Model
      */
     public function getManufacturer($manufacturer_id)
     {
-        $manufacturer_id = (int)$manufacturer_id;
-        $store_id = (int)$this->config->get('config_store_id');
+        $manufacturer_id = (int) $manufacturer_id;
+        $store_id = (int) $this->config->get('config_store_id');
         $cache_key = 'manufacturer.' . $manufacturer_id . '.store_' . $store_id;
         $output = $this->cache->pull($cache_key);
         if ($output !== false) {
             return $output;
         }
-        $query = $this->db->query("SELECT *
+        $query = $this->db->query(
+            "SELECT *
 									FROM " . $this->db->table("manufacturers") . " m
 									LEFT JOIN " . $this->db->table("manufacturers_to_stores") . " m2s
 										ON (m.manufacturer_id = m2s.manufacturer_id)
 									WHERE m.manufacturer_id = '" . $manufacturer_id . "'
-										AND m2s.store_id = '" . $store_id . "'");
+										AND m2s.store_id = '" . $store_id . "'"
+        );
         $output = $query->row;
         $this->cache->push($cache_key, $output);
         return $output;
@@ -57,12 +60,12 @@ class ModelCatalogManufacturer extends Model
      */
     public function getManufacturers($data = [])
     {
-        $store_id = (int)$this->config->get('config_store_id');
-        $data['filter']['manufacturer_id'] = filterIntegerIdList((array)$data['filter']['manufacturer_id']);
+        $store_id = (int) ($data['store_id'] ?? $this->config->get('config_store_id'));
+        $data['filter']['manufacturer_id'] = filterIntegerIdList((array) $data['filter']['manufacturer_id']);
 
         if (isset($data['start']) || isset($data['limit'])) {
-            $data['start'] = max((int)$data['start'], 0);
-            $data['limit'] = max(0, (int)$data['limit']) ?: (int)$this->config->get('config_catalog_limit');
+            $data['start'] = max((int) $data['start'], 0);
+            $data['limit'] = max(0, (int) $data['limit']) ? : (int) $this->config->get('config_catalog_limit');
             $cache_key = 'manufacturer.list.' . md5(var_export($data, true)) . '.store_' . $store_id;
         } else {
             $cache_key = 'manufacturer.list.store_' . $store_id;
@@ -87,8 +90,8 @@ class ModelCatalogManufacturer extends Model
             $sql .= " AND " . $data['subsql_filter'];
         }
 
-        $sql .= 'ORDER BY sort_order, LCASE(m.name) ASC '.PHP_EOL
-             .'LIMIT ' . (int)$data['start'] . ', ' . (int)$data['limit'];
+        $sql .= 'ORDER BY sort_order, LCASE(m.name) ASC ' . PHP_EOL
+            . 'LIMIT ' . (int) $data['start'] . ', ' . (int) $data['limit'];
 
         $query = $this->db->query($sql);
         $output = $query->rows;
@@ -109,7 +112,8 @@ class ModelCatalogManufacturer extends Model
             FROM " . $this->db->table("manufacturers") . " m
             RIGHT JOIN " . $this->db->table("products") . " p 
                 ON (m.manufacturer_id = p.manufacturer_id)
-            WHERE p.product_id = '" . (int)$product_id . "'");
+            WHERE p.product_id = '" . (int) $product_id . "'"
+        );
         return $query->rows;
     }
 
@@ -121,7 +125,7 @@ class ModelCatalogManufacturer extends Model
      */
     public function getManufacturersData($data = [])
     {
-        $storeId = (int)($data['store_id'] ?? $this->config->get('config_store_id'));
+        $storeId = (int) ($data['store_id'] ?? $this->config->get('config_store_id'));
         $cacheKey = 'manufacturer.data.' . $storeId . md5(var_export($data, true));
         $output = $this->cache->pull($cacheKey);
         if ($output !== false) {
@@ -155,6 +159,7 @@ class ModelCatalogManufacturer extends Model
 
     /**
      * @param array $data
+     *
      * @return array
      * @throws AException
      */
@@ -167,7 +172,7 @@ class ModelCatalogManufacturer extends Model
 
         $rates = filterIntegerIdList($data['filter']['rating']);
 
-        $store_id = (int)$this->config->get('config_store_id');
+        $store_id = (int) $this->config->get('config_store_id');
         $cache_key = 'manufacturer.category_ids.' . md5(var_export($data, true)) . '.store_' . $store_id;
         $categories = $this->cache->pull($cache_key);
         if ($categories !== false) {
@@ -181,7 +186,7 @@ class ModelCatalogManufacturer extends Model
         if ($rates) {
             $sql .= " INNER JOIN " . $this->db->table('reviews') . " r
                     ON (r.product_id = p.product_id AND r.status = 1
-                        AND r.rating IN (" . implode(',', (array)$data['filter']['rating']) . "))";
+                        AND r.rating IN (" . implode(',', (array) $data['filter']['rating']) . "))";
         }
         $sql .= " WHERE p.status = '1'
                     AND COALESCE(p.date_available,'1970-01-01')< NOW() 
