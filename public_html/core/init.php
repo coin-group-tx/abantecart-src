@@ -295,7 +295,7 @@ try {
     require_once(DIR_CORE . 'lib' . DS . 'config.php');
     require_once(DIR_CORE . 'lib' . DS . 'db.php');
     require_once(DIR_CORE . 'lib' . DS . 'connect.php');
-    require_once(DIR_CORE . 'lib' . DS . 'document.php');
+    require_once(DIR_CORE . 'lib' . DS . 'ADocument.php');
     require_once(DIR_CORE . 'lib' . DS . 'image.php');
     require_once(DIR_CORE . 'lib' . DS . 'log.php');
 

@@ -19,6 +19,7 @@
  */
 
 /** @noinspection PhpUnused */
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 class ControllerPagesProductManufacturer extends AController
 {
@@ -109,6 +110,7 @@ class ControllerPagesProductManufacturer extends AController
         }
 
         if ($manufacturer_info) {
+            $this->data['manufacturer_info'] = $manufacturer_info;
             $this->document->addBreadcrumb(
                 [
                     'href'      => $this->html->getSEOURL(
@@ -210,7 +212,7 @@ class ControllerPagesProductManufacturer extends AController
                     $track_stock = false;
                     $in_stock = false;
                     $no_stock_text = $this->language->get('text_out_of_stock');
-                    $stock_checkout = (string)$result['stock_checkout'] === ''
+                    $stock_checkout = (string) $result['stock_checkout'] === ''
                         ? $this->config->get('config_stock_checkout')
                         : $result['stock_checkout'];
                     $total_quantity = 0;

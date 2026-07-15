@@ -94,7 +94,7 @@ class ControllerPagesProductCategory extends AController
                         $path .= '_' . $path_id;
                     }
                 }
-                // include subdirectories into result product list
+                // include subdirectories in the result product list
                 if ($path_id == $currentId) {
                     $category_id = array_merge($category_id, $mdl->getChildrenIDs((int) $path_id));
                 }
@@ -161,6 +161,7 @@ class ControllerPagesProductCategory extends AController
         }
 
         if ($category_info) {
+            $this->data['category_info'] = $category_info;
             if ($this->config->get('embed_mode')) {
                 $category_info['name'] = $this->language->get('text_top_category');
             }
@@ -408,7 +409,6 @@ class ControllerPagesProductCategory extends AController
 
                 $this->data['sort'] = $sort;
                 $this->data['order'] = $order;
-                $this->view->setTemplate('pages/product/category.tpl');
             } else {
                 $this->document->setTitle($category_info['name']);
                 $this->document->setDescription($category_info['meta_description']);
@@ -418,8 +418,8 @@ class ControllerPagesProductCategory extends AController
                 $this->data['continue'] = $this->html->getHomeURL();
                 $this->data['categories'] = [];
                 $this->data['products'] = [];
-                $this->view->setTemplate('pages/product/category.tpl');
             }
+            $this->view->setTemplate('pages/product/category.tpl');
             $this->data['review_status'] = $this->config->get('display_reviews');
         } else {
             if (isset($request['path'])) {

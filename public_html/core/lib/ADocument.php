@@ -1,22 +1,23 @@
 <?php
-/*------------------------------------------------------------------------------
-  $Id$
 
-  AbanteCart, Ideal OpenSource Ecommerce Solution
-  http://www.AbanteCart.com
-
-  Copyright © 2011-2020 Belavier Commerce LLC
-
-  This source file is subject to Open Software License (OSL 3.0)
-  License details is bundled with this package in the file LICENSE.txt.
-  It is also available at this URL:
-  <http://www.opensource.org/licenses/OSL-3.0>
-
- UPGRADE NOTE:
-   Do not edit or add to this file if you wish to upgrade AbanteCart to newer
-   versions in the future. If you wish to customize AbanteCart for your
-   needs please refer to http://www.AbanteCart.com for more information.
-------------------------------------------------------------------------------*/
+/*
+ *   $Id$
+ *
+ *   AbanteCart, Ideal OpenSource Ecommerce Solution
+ *   http://www.AbanteCart.com
+ *
+ *   Copyright © 2011-2026 Belavier Commerce LLC
+ *
+ *   This source file is subject to Open Software License (OSL 3.0)
+ *   License details are bundled with this package in the file LICENSE.txt.
+ *   It is also available at this URL:
+ *   <http://www.opensource.org/licenses/OSL-3.0>
+ *
+ *  UPGRADE NOTE:
+ *    Do not edit or add to this file if you wish to upgrade AbanteCart to newer
+ *    versions in the future. If you wish to customize AbanteCart for your
+ *    needs, please refer to http://www.AbanteCart.com for more information.
+ */
 if (!defined('DIR_CORE')) {
     header('Location: static_pages/');
 }
@@ -33,11 +34,12 @@ final class ADocument
     private $charset = 'utf-8';
     private $language = 'en-gb';
     private $direction = 'ltr';
-    private $links = array();
-    private $styles = array();
-    private $scripts = array();
-    private $scripts_bottom = array();
-    private $breadcrumbs = array();
+    private $links = [];
+    private $metas = [];
+    private $styles = [];
+    private $scripts = [];
+    private $scripts_bottom = [];
+    private $breadcrumbs = [];
 
     /**
      * @param string $title
@@ -158,7 +160,7 @@ final class ADocument
      */
     public function resetLinks()
     {
-        $this->links = array();
+        $this->links = [];
     }
 
     /**
@@ -169,7 +171,7 @@ final class ADocument
      *
      * @void
      */
-    public function addLink($link_item = array())
+    public function addLink($link_item = [])
     {
         if ($link_item["href"]) {
             $this->links[] = $link_item;
@@ -185,22 +187,63 @@ final class ADocument
     }
 
     /**
+     * @param array $metaData
+     * @param string $key
+     *
+     * @return void
+     */
+    public function addMeta(array $metaData = [], string $key = '')
+    {
+        if ($metaData["name"] && $metaData["content"]) {
+            if($key) {
+                $this->metas[$key] = $metaData;
+            }else {
+                $this->metas[] = $metaData;
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetas(): array
+    {
+        return array_merge(
+            [
+                'keywords'    => [
+                    'name'    => 'keywords',
+                    'content' => $this->getKeywords()
+                ],
+                'description' => [
+                    'name'    => 'description',
+                    'content' => $this->getDescription()
+                ],
+                'generator'   => [
+                    'name'    => 'generator',
+                    'content' => 'AbanteCart v' . VERSION . ' - Open Source eCommerce solution'
+                ]
+            ], 
+            $this->metas
+        );
+    }
+
+    /**
      * @void
      */
     public function resetStyles()
     {
-        $this->styles = array();
+        $this->styles = [];
     }
 
     /**
-     * method to add new Style item
+     * method to add a new Style item
      *
      * @param array $style_item - array("href"=>"","rel"=>"","media"=>)
      *                          Examples: href => 'www.google.com', $rel = 'stylesheet', $media = 'screen'
      *
-     * @return null
+     * @void
      */
-    public function addStyle($style_item = array())
+    public function addStyle($style_item = [])
     {
         if ($style_item["href"]) {
             $this->styles[] = $style_item;
@@ -220,21 +263,21 @@ final class ADocument
      */
     public function resetScripts()
     {
-        $this->scripts = array();
+        $this->scripts = [];
     }
 
     /**
-     * method to add new javascript file to the head
+     * method to add a new JavaScript file to the head
      *
-     * @param string - web path to the file
-     *               Examples: /javascript/bootstrap.js or http//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
+     * @param string $URI - web path to the file
+     *               Examples: /js/bootstrap.js or http//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
      *
      * @return void
      */
-    public function addScript($script)
+    public function addScript($URI)
     {
-        if ($script) {
-            $this->scripts[] = $script;
+        if ($URI) {
+            $this->scripts[] = $URI;
         }
     }
 
@@ -248,16 +291,16 @@ final class ADocument
     }
 
     /**
-     * method to add new javascript file to the bottom before </body> tag
+     * method to add a new JavaScript file to the bottom before </body> tag
      *
-     * @param string - web path to the file
-     *               Examples: /javascript/bootstrap.js or http//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
+     * @param string $URI - web path to the file
+     *               Examples: /js/bootstrap.js or http//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
      *
      * @void
      */
-    public function addScriptBottom($script)
+    public function addScriptBottom($URI)
     {
-        $this->scripts_bottom[] = $script;
+        $this->scripts_bottom[] = $URI;
     }
 
     /**
@@ -271,17 +314,17 @@ final class ADocument
 
     public function resetScriptsBottom()
     {
-        $this->scripts_bottom = array();
+        $this->scripts_bottom = [];
     }
 
     /**
-     * method to reset breadcrumbs array
+     * method to reset a breadcrumb array
      *
      * @void
      */
     public function resetBreadcrumbs()
     {
-        $this->breadcrumbs = array();
+        $this->breadcrumbs = [];
     }
 
     /**
@@ -291,7 +334,7 @@ final class ADocument
      *
      * @void
      */
-    public function initBreadcrumb($breadcrumb_item = array())
+    public function initBreadcrumb($breadcrumb_item = [])
     {
         $this->resetBreadcrumbs();
 
@@ -305,7 +348,7 @@ final class ADocument
      *
      * @void
      */
-    public function addBreadcrumb($breadcrumb_item = array())
+    public function addBreadcrumb($breadcrumb_item = [])
     {
         if ($breadcrumb_item["href"]) {
             $this->breadcrumbs[] = $breadcrumb_item;
@@ -321,12 +364,12 @@ final class ADocument
     }
 
     /**
-     * trims text with set length and ellipes
+     * trims text with a set length and ellipses
      *
-     * @param string $input      text to trim
-     * @param int    $length     in characters to trim to
-     * @param bool   $ellipses   if ellipses (...) are to be added
-     * @param bool   $strip_html if html tags are to be stripped
+     * @param string $input text to trim
+     * @param int $length in characters to trim to
+     * @param bool $ellipses if ellipses (...) are to be added
+     * @param bool $strip_html if html tags are to be stripped
      *
      * @return string
      */

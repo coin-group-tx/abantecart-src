@@ -37,32 +37,36 @@ class ModelCatalogProduct extends Model
     }
 
     /**
-     * @param int $product_id
+     * @param int|string $productId
      *
      * @return array
      * @throws AException
      */
-    public function getProduct($product_id)
+    public function getProduct(int|string $productId)
     {
-        if (!(int) $product_id) {
+        $productId = (int) $productId;
+        if (!$productId) {
             return [];
         }
+        $storeId = (int) $this->config->get('config_store_id');
+        $languageId = (int) $this->config->get('storefront_language_id');
+
         $query = $this->db->query(
-            "SELECT DISTINCT *,
+            "SELECT DISTINCT p.*,
                         pd.name AS name,
                         pd.blurb AS blurb,
                         m.name AS manufacturer,
                         ss.name AS stock_status,
                         stock_checkout,
-                        lcd.unit as length_class_name, " .
+                        lcd.unit as length_class_name, " . PHP_EOL .
             $this->_sql_avg_rating_string() . ", " .
             $this->_sql_final_price_string() . " " .
-            $this->_sql_join_string() .
-            " LEFT JOIN " . $this->db->table("length_class_descriptions") . " lcd
+            $this->_sql_join_string() . PHP_EOL
+            . " LEFT JOIN " . $this->db->table("length_class_descriptions") . " lcd
                 ON (p.length_class_id = lcd.length_class_id
-                    AND lcd.language_id = '" . (int) $this->config->get('storefront_language_id') . "')
-            WHERE p.product_id = '" . (int) $product_id . "'
-                    AND p2s.store_id = '" . (int) $this->config->get('config_store_id') . "'
+                    AND lcd.language_id = " . $languageId . ")
+            WHERE p.product_id = " . $productId . "
+                    AND p2s.store_id = " . $storeId . "
                     AND p.date_available <= NOW() AND p.status = '1'"
         );
         return $query->row;
@@ -94,7 +98,7 @@ class ModelCatalogProduct extends Model
         foreach ($query->rows as $row) {
             $track_status += (int) $row['subtract'];
         }
-        //if no options - check whole product subtract
+        //if no options, check whole product subtract
         if (!$track_status) {
             //check main product
             $query = $this->db->query(
@@ -169,7 +173,7 @@ class ModelCatalogProduct extends Model
 
     /**
      *
-     * Check if product or any option has any stock available
+     * Check if a product or any option has any stock available
      *
      * @param int $product_id
      *
@@ -193,19 +197,19 @@ class ModelCatalogProduct extends Model
         );
         if ($query->num_rows) {
             foreach ($query->rows as $row) {
-                //if tracking of stock disabled - set quantity as big
+                //if tracking of stock disabled, set quantity as big
                 if (!$row['subtract']) {
                     $total_quantity = true;
                     continue;
                 } else {
                     $trackable = true;
                 }
-                //calculate only  no options without tracking
+                //calculate only no options without tracking
                 if ($total_quantity !== true) {
                     $total_quantity += max($row['quantity'], 0);
                 }
             }
-            //if some of option value have subtract NO - think product is available
+            //if some of option value have a "subtract" "NO", think product is available
             if ($total_quantity == 0 && !$trackable) {
                 $total_quantity = true;
             }
@@ -1051,7 +1055,7 @@ class ModelCatalogProduct extends Model
     }
 
     /**
-     * Update view count. Do not update modification date. See lat
+     * Update view count. Do not update the modification date. See lat
      *
      * @param int $product_id
      *
@@ -1095,8 +1099,8 @@ class ModelCatalogProduct extends Model
     }
 
     /**
-     * check if product option is group option
-     * if yes, return array of possible groups for option_value_id
+     * check if a product option is a group option
+     * if yes, return an array of possible groups for option_value_id
      *
      * @param $product_id
      * @param $option_id
@@ -1134,8 +1138,8 @@ class ModelCatalogProduct extends Model
 
         //find attribute_value_id of option_value
         //find all option values with attribute_value_id
-        //for each option values find group id
-        //add each group values to result array
+        //for each option value find group id
+        //add each group value to result array
         $result = [];
         $attribute_value_id = null;
         foreach ($option_values->rows as $row) {
@@ -1423,7 +1427,7 @@ class ModelCatalogProduct extends Model
     }
 
     /**
-     * Check if any of input options are required and provided
+     * Check if any of the input options are required and provided
      *
      * @param int $product_id
      * @param array $input_options
@@ -1941,9 +1945,6 @@ class ModelCatalogProduct extends Model
                 $sql .= " LIMIT " . (int) $data['start'] . "," . (int) $data['limit'];
             }
             $query = $this->db->query($sql);
-            $output = $query->rows;
-            $this->cache->push($cacheKey, $output);
-            return $output;
         } else {
             $query = $this->db->query(
                 "SELECT *
@@ -1955,11 +1956,10 @@ class ModelCatalogProduct extends Model
                     AND p.status = '1'
                 ORDER BY pd.name"
             );
-
-            $output = $query->rows;
-            $this->cache->push($cacheKey, $output);
-            return $output;
         }
+        $output = $query->rows;
+        $this->cache->push($cacheKey, $output);
+        return $output;
     }
 
     /**
@@ -2124,12 +2124,7 @@ class ModelCatalogProduct extends Model
     }
 
     /**
-     * @param array $conditions
-     * @param $sort
-     * @param $order
-     * @param $start
-     * @param $limit
-     * @param $collectionId
+     * @param array $data
      *
      * @return array
      * @throws AException

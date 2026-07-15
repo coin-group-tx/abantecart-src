@@ -1,11 +1,12 @@
 <?php
+
 /*
  *   $Id$
  *
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2025 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
  *   License details are bundled with this package in the file LICENSE.txt.
@@ -28,26 +29,12 @@ class ControllerCommonHead extends AController
         //init controller data
         $this->extensions->hk_InitData($this, __FUNCTION__);
 
-        //run system check to make sure system is stable to run the request
+        //run system check to make sure the system is stable to run the request
         //for storefront log messages. nothing is shown to users
         run_system_check($this->registry, 'log');
 
         $this->loadLanguage('common/header');
-        $meta = [
-            'keywords'    => [
-                'name'    => 'keywords',
-                'content' => $this->document->getKeywords()
-            ],
-            'description' => [
-                'name'    => 'description',
-                'content' => $this->document->getDescription()
-            ],
-            'generator'   => [
-                'name'    => 'generator',
-                'content' => 'AbanteCart v' . VERSION . ' - Open Source eCommerce solution'
-            ],
-        ];
-        $this->view->assign('meta', $meta);
+
         $this->view->assign('title', $this->document->getTitle());
 
         $this->view->assign('template', $this->config->get('config_storefront_template'));
@@ -72,7 +59,9 @@ class ControllerCommonHead extends AController
             if (is_numeric($iconUri)) {
                 $resource = new AResource('image');
                 $resourceInfo = $resource->getResource($iconUri);
-                if (is_file(DIR_RESOURCE . $resourceInfo['type_dir'] . str_replace('/', DS, $resourceInfo['resource_path']))) {
+                if (is_file(
+                    DIR_RESOURCE . $resourceInfo['type_dir'] . str_replace('/', DS, $resourceInfo['resource_path'])
+                )) {
                     $iconUri = $resourceInfo['type_dir'] . $resourceInfo['resource_path'];
                 } else {
                     $this->messages->saveWarning(
@@ -104,13 +93,14 @@ class ControllerCommonHead extends AController
         $this->view->assign('lang', $this->language->get('code'));
         $this->view->assign('direction', $this->language->get('direction'));
         $this->view->assign('links', $this->document->getLinks());
+        $this->view->assign('meta', $this->document->getMetas());
         $this->view->assign('styles', $this->document->getStyles());
         $this->view->assign('scripts', $this->document->getScripts());
         $this->view->assign('breadcrumbs', $this->document->getBreadcrumbs());
 
         $this->view->assign('store', $this->config->get('store_name'));
         $this->view->assign('cart_url', $this->html->getSecureURL('checkout/cart'));
-        $this->view->assign('cart_ajax', (int)$this->config->get('config_cart_ajax'));
+        $this->view->assign('cart_ajax', (int) $this->config->get('config_cart_ajax'));
         //URL should be automatic for CORS
         $this->view->assign('cart_ajax_url', $this->html->getURL('r/product/product/addToCart', '&fc=1'));
         $this->view->assign('search_url', $this->html->getNonSecureURL('product/search'));

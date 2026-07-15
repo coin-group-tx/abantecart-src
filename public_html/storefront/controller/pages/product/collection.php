@@ -19,6 +19,7 @@
  */
 
 /** @noinspection PhpUnused */
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 class ControllerPagesProductCollection extends AController
 {
@@ -61,8 +62,8 @@ class ControllerPagesProductCollection extends AController
         $httpQuery = array_merge($httpQuery, (array) $this->data['additional_filters']);
 
         $collectionId = (int) $get['collection_id'];
-        $collectionInfo = $collectionId 
-            ? $mdl->getById($collectionId, (int)$this->config->get('config_store_id')) 
+        $collectionInfo = $collectionId
+            ? $mdl->getById($collectionId, (int) $this->config->get('config_store_id'))
             : [];
         if (!$collectionInfo) {
             $this->notFound();
@@ -95,10 +96,10 @@ class ControllerPagesProductCollection extends AController
             $collectionProducts = $pMdl->getCollectionProducts(
                 [
                     'collectionData' => $collectionInfo,
-                    'sort' => $sort,
-                    'order' => $order,
-                    'start' => $start,
-                    'limit' => $limit
+                    'sort'           => $sort,
+                    'order'          => $order,
+                    'start'          => $start,
+                    'limit'          => $limit
                 ]
             );
         }
@@ -158,7 +159,7 @@ class ControllerPagesProductCollection extends AController
                 $in_stock = false;
                 $no_stock_text = $this->language->get('text_out_of_stock');
                 $total_quantity = 0;
-                $stock_checkout = (string)$result['stock_checkout'] === ''
+                $stock_checkout = (string) $result['stock_checkout'] === ''
                     ? $this->config->get('config_stock_checkout')
                     : $result['stock_checkout'];
                 if ($stockInfo[$productId]['subtract']) {
@@ -265,11 +266,12 @@ class ControllerPagesProductCollection extends AController
             $this->data['categories'] = [];
             $this->data['products'] = [];
         }
-        $this->view->setTemplate('pages/product/collection.tpl');
 
+        $this->data['collection_info'] = $collectionInfo;
         $this->data['review_status'] = $this->config->get('display_reviews');
-        $this->view->batchAssign($this->data);
 
+        $this->view->batchAssign($this->data);
+        $this->view->setTemplate('pages/product/collection.tpl');
         $this->processTemplate();
 
         //init controller data
