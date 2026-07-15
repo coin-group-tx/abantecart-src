@@ -313,8 +313,8 @@ class ControllerPagesDesignContent extends AController
         $this->data['error'] = $this->error;
         $this->data['language_id'] = $this->language->getContentLanguageID();
         $content_info = [];
-        if ($contentId && $this->request->is_GET()) {
-            $content_info = $this->acm->getContent($contentId);
+        if ($contentId) {
+            $this->data['content_info'] = $content_info = $this->acm->getContent($contentId);            
         }
         $this->document->initBreadcrumb(
             [

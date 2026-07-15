@@ -779,7 +779,7 @@ class ControllerPagesCatalogProduct extends AController
                 'type'  => 'checkbox',
                 'name'  => 'status',
                 'value' => $this->data['status'],
-                'style' => 'btn_switch btn-group-sm',
+                'style' => 'btn_switch',
             ]
         );
 
@@ -788,7 +788,7 @@ class ControllerPagesCatalogProduct extends AController
                 'type'  => 'checkbox',
                 'name'  => 'featured',
                 'value' => $this->data['featured'],
-                'style' => 'btn_switch btn-group-sm',
+                'style' => 'btn_switch',
             ]
         );
 
@@ -904,7 +904,7 @@ class ControllerPagesCatalogProduct extends AController
                 'type'  => 'checkbox',
                 'name'  => 'call_to_order',
                 'value' => $this->data['call_to_order'],
-                'style' => 'btn_switch btn-group-sm',
+                'style' => 'btn_switch',
             ]
         );
 
@@ -1115,7 +1115,7 @@ class ControllerPagesCatalogProduct extends AController
             [
                 'type'  => 'checkbox',
                 'name'  => 'shipping',
-                'style' => 'btn_switch btn-group-sm',
+                'style' => 'btn_switch',
                 'value' => $this->data['shipping'] ?? 1,
             ]
         );
@@ -1124,7 +1124,7 @@ class ControllerPagesCatalogProduct extends AController
             [
                 'type'  => 'checkbox',
                 'name'  => 'free_shipping',
-                'style' => 'btn_switch btn-group-sm',
+                'style' => 'btn_switch',
                 'value' => $this->data['free_shipping'] ?? 0,
             ]
         );
@@ -1133,7 +1133,7 @@ class ControllerPagesCatalogProduct extends AController
             [
                 'type'  => 'checkbox',
                 'name'  => 'ship_individually',
-                'style' => 'btn_switch btn-group-sm',
+                'style' => 'btn_switch',
                 'value' => $this->data['ship_individually'] ?? 0,
             ]
         );

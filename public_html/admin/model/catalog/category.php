@@ -1,21 +1,22 @@
-<?php
+<?php 
+
 /*
  *   $Id$
  *
  *   AbanteCart, Ideal OpenSource Ecommerce Solution
  *   http://www.AbanteCart.com
  *
- *   Copyright © 2011-2025 Belavier Commerce LLC
+ *   Copyright © 2011-2026 Belavier Commerce LLC
  *
  *   This source file is subject to Open Software License (OSL 3.0)
- *   License details is bundled with this package in the file LICENSE.txt.
+ *   License details are bundled with this package in the file LICENSE.txt.
  *   It is also available at this URL:
  *   <http://www.opensource.org/licenses/OSL-3.0>
  *
  *  UPGRADE NOTE:
  *    Do not edit or add to this file if you wish to upgrade AbanteCart to newer
  *    versions in the future. If you wish to customize AbanteCart for your
- *    needs please refer to http://www.AbanteCart.com for more information.
+ *    needs, please refer to http://www.AbanteCart.com for more information.
  */
 
 if (!defined('DIR_CORE') || !IS_ADMIN) {
@@ -27,6 +28,29 @@ if (!defined('DIR_CORE') || !IS_ADMIN) {
  */
 class ModelCatalogCategory extends Model
 {
+    public function __construct($registry)
+    {
+        parent::__construct($registry);
+        /**
+         * hook can change this array after class construction
+         */
+        $this->data['category_columns'] = [
+            'category_id'   => 'int',
+            'parent_id'     => 'int',
+            'sort_order'    => 'int',
+            'status'        => 'int',
+            'supplier_code' => 'string',
+            'supplier_id'   => 'string',
+        ];
+
+        $this->data['category_description_columns'] = [
+                'name'             => 'string',
+                'meta_keywords'    => 'string',
+                'meta_description' => 'string',
+                'description'      => 'string'
+            ];
+    }
+
     /**
      * @param $data
      *
@@ -36,31 +60,44 @@ class ModelCatalogCategory extends Model
     public function addCategory($data)
     {
         $contentLangId = $this->language->getContentLanguageID();
+        
+        $fields = [];
+        foreach ($this->data['category_columns'] as $field => $type) {
+            if ($field === 'category_id') {
+                continue;
+            }
+            if (!isset($data[$field])) {
+                continue;
+            }
+            if ($type === 'int') {
+                $fields[] = $field . " = '" . (int) $data[$field] . "'";
+            } elseif ($type === 'string') {
+                $fields[] = $field . " = " . $this->db->stringOrNull($data[$field]);
+            }
+        }
+
         $this->db->query(
             "INSERT INTO " . $this->db->table("categories") . " 
-            SET parent_id = '" . (int)$data['parent_id'] . "',
-                sort_order = '" . (int)$data['sort_order'] . "',
-                status = '" . (int)$data['status'] . "',
-                supplier_code = " . $this->db->stringOrNull($data['supplier_code']) . ",
-                supplier_id = " . $this->db->stringOrNull($data['supplier_id']) . ",
-                date_modified = NOW(),
-                date_added = NOW()"
+            SET " . implode(', ', $fields)
         );
-        $category_id = $this->db->getLastId();
+        $category_id = (int)$this->db->getLastId();
 
         foreach ($data['category_description'] as $language_id => $value) {
-            $this->language->replaceDescriptions(
-                'category_descriptions',
-                ['category_id' => (int)$category_id],
-                [
-                    $language_id => [
-                        'name'             => $value['name'],
-                        'meta_keywords'    => $value['meta_keywords'],
-                        'meta_description' => $value['meta_description'],
-                        'description'      => $value['description'],
-                    ],
-                ]
-            );
+            $update = [];
+            foreach ($this->data['category_description_columns'] as $field => $type) {
+                if (!isset($value[$field])) {
+                    continue;
+                }
+                $update[$field] = $value[$field];
+            }
+
+            if (!empty($update)) {
+                $this->language->replaceDescriptions(
+                    'category_descriptions',
+                    ['category_id' => $category_id],
+                    [$language_id => $update]
+                );
+            }
         }
 
         if (isset($data['category_store'])) {
@@ -111,11 +148,18 @@ class ModelCatalogCategory extends Model
      */
     public function editCategory($category_id, $data)
     {
-        $fields = ['parent_id', 'sort_order', 'status', 'supplier_code', 'supplier_id'];
-        $update = ['date_modified = NOW()'];
-        foreach ($fields as $f) {
-            if (isset($data[$f])) {
-                $update[] = $f . " = " . $this->db->stringOrNull($data[$f]);
+        $update = [];
+        foreach ($this->data['category_columns'] as $field => $type) {
+            if ($field === 'category_id') {
+                continue;
+            }
+            if (!isset($data[$field])) {
+                continue;
+            }
+            if ($type === 'int') {
+                $update[] = $field . " = '" . (int) $data[$field] . "'";
+            } elseif ($type === 'string') {
+                $update[] = $field . " = " . $this->db->stringOrNull($data[$field]);
             }
         }
         if (!empty($update)) {
@@ -129,22 +173,17 @@ class ModelCatalogCategory extends Model
         if (!empty($data['category_description'])) {
             foreach ($data['category_description'] as $language_id => $value) {
                 $update = [];
-                if (isset($value['name'])) {
-                    $update["name"] = $value['name'];
+                foreach ($this->data['category_description_columns'] as $field => $type) {
+                    if (!isset($value[$field])) {
+                        continue;
+                    }
+                    $update[$field] = $value[$field];
                 }
-                if (isset($value['description'])) {
-                    $update["description"] = $value['description'];
-                }
-                if (isset($value['meta_keywords'])) {
-                    $update["meta_keywords"] = $value['meta_keywords'];
-                }
-                if (isset($value['meta_description'])) {
-                    $update["meta_description"] = $value['meta_description'];
-                }
-                if (!empty($update)) {
+
+                if($update) {
                     // insert or update
                     $this->language->replaceDescriptions(
-                        'category_descriptions',
+                    'category_descriptions',
                         ['category_id' => (int)$category_id],
                         [$language_id => $update]
                     );
@@ -194,10 +233,7 @@ class ModelCatalogCategory extends Model
      */
     public function deleteCategory($category_id)
     {
-        $this->db->query(
-            "DELETE FROM " . $this->db->table("categories") . " 
-            WHERE category_id = '" . (int)$category_id . "'"
-        );
+
         $this->db->query(
             "DELETE FROM " . $this->db->table("category_descriptions") . " 
             WHERE category_id = '" . (int)$category_id . "'"
@@ -225,7 +261,7 @@ class ModelCatalogCategory extends Model
         );
         foreach ($resources as $r) {
             $rm->unmapResource('categories', $category_id, $r['resource_id']);
-            //if resource became orphan - delete it
+            //if resource became orphan, delete it
             if (!$rm->isMapped($r['resource_id'])) {
                 $rm->deleteResource($r['resource_id']);
             }
@@ -244,6 +280,12 @@ class ModelCatalogCategory extends Model
         foreach ($query->rows as $result) {
             $this->deleteCategory($result['category_id']);
         }
+
+        $this->db->query(
+            "DELETE FROM " . $this->db->table("categories") . " 
+            WHERE category_id = '" . (int)$category_id . "'"
+        );
+
         $this->cache->remove(['product', 'collection', 'category', 'storefront_menu']);
     }
 
@@ -260,7 +302,7 @@ class ModelCatalogCategory extends Model
                 (SELECT keyword
                 FROM " . $this->db->table("url_aliases") . " 
                 WHERE query = 'category_id=" . (int)$category_id . "'
-                    AND language_id='" . (int)$this->language->getContentLanguageID() . "' ) AS keyword
+                    AND language_id = '" . (int)$this->language->getContentLanguageID() . "' ) AS keyword
             FROM " . $this->db->table("categories") . " 
             WHERE category_id = '" . (int)$category_id . "'"
         );
@@ -332,10 +374,8 @@ class ModelCatalogCategory extends Model
                     $this->getCategories($result['category_id'], $store_id)
                 );
             }
-
             $this->cache->push($cacheKey, $category_data);
         }
-
         return $category_data;
     }
 
@@ -466,7 +506,7 @@ class ModelCatalogCategory extends Model
              LEFT JOIN " . $this->db->table("category_descriptions") . " cd 
                 ON (c1.category_id = cd.category_id)
              WHERE cd.language_id = '" . (int)$this->language->getContentLanguageID() . "'
-             ORDER BY c.sort_order, cd.name ASC"
+             ORDER BY c.sort_order, cd.name"
         );
         $result = [];
         foreach ($query->rows as $r) {
@@ -518,7 +558,7 @@ class ModelCatalogCategory extends Model
                 ON (c.category_id = cd.category_id)
             WHERE c.category_id = '" . (int)$category_id . "' 
                 AND cd.language_id = '" . $language_id . "'
-            ORDER BY c.sort_order, cd.name ASC"
+            ORDER BY c.sort_order, cd.name"
         );
 
         $category_info = $query->row;
@@ -632,7 +672,7 @@ class ModelCatalogCategory extends Model
                     ON c2s.category_id = c.category_id
                 WHERE c2s.store_id = " . $storeId;
         if (is_int($parentId) && $parentId >= 0) {
-            $sql .= " AND c.parent_id = '" . (int)$parentId . "'";
+            $sql .= " AND c.parent_id = '" . $parentId . "'";
         } elseif (is_array($parentId)) {
             $sql .= " AND c.parent_id IN (" . implode(',', $parentId) . ")";
         }

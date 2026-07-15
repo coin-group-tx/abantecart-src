@@ -24,6 +24,15 @@ if (!defined('DIR_CORE') || !IS_ADMIN) {
 
 class ModelCatalogManufacturer extends Model
 {
+    public function __construct($registry)
+    {
+        parent::__construct($registry);
+        $this->data['manufacturer_columns'] = [
+            'name'       => 'string',
+            'sort_order' => 'int',
+        ];
+    }
+
     /**
      * @param array $data
      *
@@ -35,12 +44,31 @@ class ModelCatalogManufacturer extends Model
         $language_id = (int)$this->language->getContentLanguageID();
         $seo_keys = [];
 
-        $this->db->query(
-            "INSERT INTO " . $this->db->table("manufacturers") . " 
-            SET 
-                name = '" . $this->db->escape($data['name']) . "', 
-                sort_order = '" . (int)$data['sort_order'] . "'"
-        );
+        $fields = [];
+        $values = [];
+
+        foreach ($this->data['manufacturer_columns'] as $column => $type) {
+            if (!isset($data[$column])) {
+                continue;
+            }
+
+            $fields[] = $column;
+
+            if ($type === 'int') {
+                $values[] = "'" . (int) $data[$column] . "'";
+            } else {
+                $values[] = "'" . $this->db->escape($data[$column]) . "'";
+            }
+        }
+
+        if (!empty($fields)) {
+            $this->db->query(
+                "INSERT INTO " . $this->db->table("manufacturers") . " 
+                SET " . implode(' = ', array_map(function($field, $value) {
+                    return $field . ' = ' . $value;
+                }, $fields, $values))
+            );
+        }
 
         $manufacturer_id = $this->db->getLastId();
 
@@ -117,17 +145,23 @@ class ModelCatalogManufacturer extends Model
      */
     public function editManufacturer($manufacturer_id, $data)
     {
-        $fields = ['name', 'sort_order'];
         $update = [];
-        foreach ($fields as $f) {
-            if (isset($data[$f])) {
-                $update[] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+        foreach ($this->data['manufacturer_columns'] as $column => $type) {
+            if (!isset($data[$column])) {
+                continue;
+            }
+
+            if ($type === 'int') {
+                $update[] = $column . " = '" . (int) $data[$column] . "'";
+            } else {
+                $update[] = $column . " = '" . $this->db->escape($data[$column]) . "'";
             }
         }
+
         if (!empty($update)) {
             $this->db->query(
                 "UPDATE " . $this->db->table("manufacturers") . " 
-                SET " . implode(',', $update) . " 
+                SET " . implode(', ', $update) . " 
                 WHERE manufacturer_id = '" . (int)$manufacturer_id . "'"
             );
         }
