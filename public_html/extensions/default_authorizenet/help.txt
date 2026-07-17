@@ -28,5 +28,4 @@ Sandbox testing notes:
 
 For more details about Authorize.Net service and details about transactions you need to access Authorize.Net dashboard.
 <br/><br/>
-For more details about affiliate program please visit http://reseller.authorize.net/application/?resellerId=34073
 

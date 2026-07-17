@@ -64,5 +64,11 @@
 		</item>
 	</settings>
 	<help_file><![CDATA[help.txt]]></help_file>
-	<help_link><![CDATA[https://support.authorize.net/authkb/index?page=home&resellerId=34073]]></help_link>
+	<help_link><![CDATA[https://www.authorize.net/support.html]]></help_link>
+	<install>
+		<trigger>install.php</trigger>
+	</install>
+	<uninstall>
+		<trigger>uninstall.php</trigger>
+	</uninstall>
 </extension>

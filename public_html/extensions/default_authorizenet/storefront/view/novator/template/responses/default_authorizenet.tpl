@@ -1,211 +1,122 @@
-<div class="enter_card">
-<?php $form_open->attr .= ' novalidate ';
-echo $form_open;?>
-    <h4 class="heading4"><?php echo $text_credit_card; ?></h4>
-    <?php echo $this->getHookVar('payment_table_pre'); ?>
-    <div class="form-group form-inline control-group mb-4">
-        <span class="subtext"><?php echo $entry_billing_address; ?>: <?php echo $payment_address; ?>...</span>
-    </div>
+<div class="anet-wrapper">
+    <?php
+    $form_open->attr .= ' novalidate ';
+    echo $form_open; ?>
+    <?php
+    echo $this->getHookVar('payment_table_pre'); ?>
     <div class="mb-3">
-        <label for="cc_owner" class="col-form-label"><?php echo $entry_cc_owner; ?></label>
-        <div class="mb-2">
-        <?php echo $cc_owner_firstname; ?>
-        </div>
-        <?php echo $cc_owner_lastname; ?>
+        <input type="hidden" name="dataValue" id="dataValue"/>
+        <input type="hidden" name="dataDescriptor" id="dataDescriptor"/>
     </div>
-    <div class="mb-3">
-        <label for="cc_owner" class="col-form-label"><?php echo $entry_cc_number; ?></label>
-        <?php echo $cc_number; ?>
-    </div>
-    <div class="mb-3 row g-3 d-flex flex-wrap justify-content-end">
-        <label class="col-auto control-label"><?php echo $entry_cc_expire_date; ?></label>
-        <div class="col-6 col-sm-4">
-            <?php echo $cc_expire_date_month; ?>
-        </div>
-        <div class="col-auto">
-            <?php echo $cc_expire_date_year; ?>
-        </div>
-    </div>
-    <div class="mb-3 row g-3 d-flex flex-wrap justify-content-between">
-        <label for="cc_owner" class="col-auto col-form-label"><?php echo $entry_cc_cvv2; ?>
-            <a onclick="openModalRemote('#ccModal', '<?php echo $cc_cvv2_help_url; ?>')"
-               href="Javascript:void(0);"><?php echo $entry_cc_cvv2_short; ?></a>
-        </label>
-        <div class="col-auto">
-            <?php echo $cc_cvv2; ?>
-            <input type="hidden" name="dataValue" id="dataValue" />
-            <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
-        </div>
-    </div>
-    <?php echo $this->getHookVar('payment_table_post'); ?>
+    <?php
+    echo $this->getHookVar('payment_table_post'); ?>
 
     <div class="form-group action-buttons text-center">
-        <button id="<?php echo $submit->name ?>"
-                class="btn btn-primary"
-                title="<?php echo_html2view($submit->text); ?>"
-                type="submit">
+        <button id="anetBtn"
+                class="AcceptUI d-none"
+                type="button"
+                data-apiLoginID="<?php echo $this->config->get('default_authorizenet_api_login_id'); ?>"
+                data-clientKey="<?php echo $this->config->get('default_authorizenet_api_public_key'); ?>"
+                data-acceptUIFormBtnTxt="<?php echo_html2view($submit->text); ?>"
+                data-acceptUIFormHeaderTxt="<?php echo_html2view($text_credit_card); ?>"
+                data-paymentOptions='{"showCreditCard": true, "showBankAccount": false}'
+                data-billingAddressOptions='{"show": false, "required": false}'
+                data-responseHandler="responseHandler">
+        </button>
+        <a id="<?php echo $submit->name ?>" class="btn btn-primary lock-on-click" title="<?php echo_html2view($submit->text); ?>">
             <i class="fa fa-check"></i>
             <?php echo $submit->text; ?>
-        </button>
+        </a>
     </div>
-</form>
-</div>
-<div id="ccModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ccModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 id="ccModalLabel"><?php echo $entry_what_cvv2; ?></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo $text_close; ?></button>
-            </div>
-        </div>
-    </div>
+    </form>
 </div>
 
 <script type="text/javascript">
-    let submitSent = false;
-    jQuery(document).ready(function () {
-        <?php
-        $acjs_url = $this->config->get('default_authorizenet_test_mode')
-            ? 'https://jstest.authorize.net/v1/Accept.js'
-            : 'https://js.authorize.net/v1/Accept.js';
-        ?>
-        loadScript("<?php echo $acjs_url;?>",
+    $(document).ready( function () {
+        loadScript("<?php echo $acceptUiUrl;?>",
             function () {
                 //validate submit
-                $('#authorizenet').submit(function (event) {
-                    event.preventDefault();
-                    if (submitSent !== true) {
-                        submitSent = true;
-                        let $form = $(this);
-                        if (!validateForm($form)) {
-                            submitSent = false;
-                            $form.addClass('was-validated');
-                            try {
-                                resetLockBtn();
-                            } catch (e) {
-                            }
-                            return false;
-                        } else {
-                            $('.alert').remove();
-                            $(this).find('.action-buttons').hide();
-                            $(this).find('.action-buttons').before(
-                                '<div class="wait alert alert-info text-center"><i class="fa fa-refresh fa-spin fa-fw"></i> <?php echo $text_wait; ?></div>'
-                            );
-                            sendPaymentDataToAnet();
-                            return false;
-                        }
+                $('#<?php echo $submit->name ?>').on('click', function () {
+                    let form = $(this).parents('form');
+                    if (!validateForm(form)) {
+                        form.addClass('was-validated');
+                        try {
+                            resetLockedButton($(this));
+                        } catch (e) {}
+                        return false;
                     }
+                    $('.alert').remove();
+                    $('#anetBtn').click();                    
+                    return true;
                 });
-
             }
         );
     });
 
-    function sendPaymentDataToAnet() {
-        var authData = {};
-        authData.clientKey = "<?php echo $this->config->get('default_authorizenet_api_public_key');?>";
-        authData.apiLoginID = "<?php echo $this->config->get('default_authorizenet_api_login_id');?>";
-
-        let cardData = {
-            cardNumber: $("[name=cc_number]").val(),
-            month: $("[name=cc_expire_date_month]").val(),
-            year: $("[name=cc_expire_date_year]").val(),
-            cardCode: $("[name=cc_cvv2]").val()
-        };
-        let billTo = {
-            firstName: <?php js_echo($order_info['payment_firstname'] ?? '');?>,
-            lastName: <?php js_echo($order_info['payment_lastname'] ?? '');?>,
-            address: <?php js_echo($order_info['payment_address_1'] ?? '');?>,
-            city: <?php js_echo($order_info['payment_city'] ?? '');?>,
-            state: <?php js_echo($order_info['payment_zone'] ?? '');?>,
-            zip: <?php js_echo(substr($order_info['payment_postcode'],0,5) ?? '');?>,
-            country: <?php js_echo($order_info['payment_country'] ?? '');?>
-        };
-        let shipTo = {
-            firstName: <?php js_echo($order_info['shipping_firstname'] ?? '');?>,
-            lastName: <?php js_echo($order_info['shipping_lastname'] ?? '');?>,
-            address: <?php js_echo($order_info['shipping_address_1'] ?? '');?>,
-            city: <?php js_echo($order_info['shipping_city'] ?? '');?>,
-            state: <?php js_echo($order_info['shipping_zone'] ?? '');?>,
-            zip: <?php js_echo(substr($order_info['shipping_postcode'],0,5) ?? '');?>,
-            country: <?php js_echo($order_info['shipping_country'] ?? '');?>
-        };
-        var secureData = {};
-        secureData.authData = authData;
-        secureData.cardData = cardData;
-        secureData.billTo = billTo;
-        secureData.shipTo = shipTo;
-        Accept.dispatchData(secureData, responseHandler);
-    }
-
     function responseHandler(response) {
         if (response.messages.resultCode === "Error") {
-            var i = 0;
-            var alert = '';
+            let i = 0;
+            let alert = '';
             while (i < response.messages.message.length) {
-                alert = '<div class="alert alert-warning"><i class="fa fa-exclamation-triangle me-3"></i>'
-                    + 'Authorize.Net: '
+                alert = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-3"></i>'
+                    + 'AuthorizeNet: '
                     + response.messages.message[i].text
-                    + '( ' + response.messages.message[i].code + ' )<div class=""></div></div>';
+                    + '( ' + response.messages.message[i].code + ' )</div>';
                 $('#<?php echo $form_open->name?>').before(alert);
-                i = i + 1;
+                i++;
             }
-
-            $('.wait').remove();
-            $('#authorizenet').find('.action-buttons').show();
-            submitSent = false;
+            scrollToElementTop('#<?php echo $form_open->name?>');
+            try { 
+                resetLockedButton($('#<?php echo $submit->name ?>')); 
+            }
+            catch (e) {
+                console.log(e);
+            }
         } else {
             paymentFormUpdate(response.opaqueData);
         }
     }
 
     function paymentFormUpdate(opaqueData) {
+        scrollToElementTop('#<?php echo $form_open->name?>');
         $("#dataDescriptor").val(opaqueData.dataDescriptor);
         $("#dataValue").val(opaqueData.dataValue);
-        confirmSubmit($('#authorizenet'), 'index.php?rt=extension/default_authorizenet/send');
+        confirmSubmit($('#authorizenet'), <?php js_echo($callback_url);?>);
     }
 
-function confirmSubmit($form, url) {
-
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: $form.find(':input'),
-        dataType: 'json',
-        success: function(data) {
-            if (!data) {
-                $('.wait').remove();
-                $form.find('.action-buttons').show();
-                $form.before('<div class="alert alert-danger"><i class="fa fa-bug me-2"></i> <?php echo $error_unknown; ?></div>');
-                $form.find('input[name=csrfinstance]').val(data.csrfinstance);
-                $form.find('input[name=csrftoken]').val(data.csrftoken);
-                submitSent = false;
-            } else {
-                if (data.error) {
-                    $('.wait').remove();
-                    $form.find('.action-buttons').show();
-                    $form.before('<div class="alert alert-warning"><i class="fa fa-exclamation me-2"></i> '+data.error+'</div>');
-                    $form.find('input[name=csrfinstance]').val(data.csrfinstance);
-                    $form.find('input[name=csrftoken]').val(data.csrftoken);
-                    submitSent = false;
-                }
-                if (data.success) {
-                    location = data.success;
+    function confirmSubmit(formElm, url) {
+        $.ajax(
+            {
+                type: 'POST',
+                url: url,
+                data: formElm.serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    if (!data) {
+                        formElm.before('<div class="alert alert-warning"><i class="bi bi-bug me-2"></i>' +
+                        <?php js_echo($error_unknown); ?>
+                            + '</div>'
+                        );
+                        try { resetLockedButton($('#<?php echo $submit->name ?>')); } catch (e) {
+                            console.log(e);
+                        }
+                    } else if (data.success) {
+                        location = data.success;                       
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    jqXHR.responseJSON
+                    formElm.before(
+                        '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>'
+                        + jqXHR.responseJSON.error_text 
+                        + '</div>'
+                    );
+                    updateCsrfTokens(formElm, jqXHR.responseJSON);
+                    try { resetLockedButton($('#<?php echo $submit->name ?>')); } catch (e) {
+                        console.log(e);
+                    }
                 }
             }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $('.wait').remove();
-            $form.find('.action-buttons').show();
-            $form.before('<div class="alert alert-danger"><i class="fa fa-exclamation me-2"></i> '+textStatus+' '+errorThrown+'</div>');
-            $form.find('input[name=csrfinstance]').val(data.csrfinstance);
-            $form.find('input[name=csrftoken]').val(data.csrftoken);
-            submitSent = false;
-        }
-    });
-}
+        );
+    }
 </script>

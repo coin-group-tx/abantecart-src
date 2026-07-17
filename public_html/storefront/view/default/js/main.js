@@ -472,3 +472,22 @@ function escapeHtml(text) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+function updateCsrfTokens(formElm, data) {
+    if (data && data.csrfinstance && data.csrftoken) {
+        formElm.find('input[name=csrfinstance]').val(data.csrfinstance);
+        formElm.find('input[name=csrftoken]').val(data.csrftoken);
+    }
+}
+
+function scrollToElementTop(selector, animate = true) {
+    const $el = $(selector);
+    if (!$el.length) return;
+    const top = $el.offset().top;
+
+    if (animate) {
+        $('html, body').animate({ scrollTop: top }, 500);
+    } else {
+        $(window).scrollTop(top);
+    }
+}

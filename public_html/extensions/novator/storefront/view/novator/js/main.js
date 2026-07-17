@@ -635,11 +635,11 @@ $(document).on('click', '.lock-on-click', function () {
     btn.addClass('disabled');
 });
 
-function resetLockedButton(btn){
-    if(!btn){ return; }
-    btn.find('i').removeClass('visually-hidden');
-    btn.find('span.spinner-border').addClass('visually-hidden');
-    btn.removeClass('disabled');
+function resetLockedButton(btnElm){
+    if(!btnElm){ return; }
+    btnElm.find('i').removeClass('visually-hidden');
+    btnElm.find('span.spinner-border').addClass('visually-hidden');
+    btnElm.removeClass('disabled');
 }
 
 $(document).on('click',"#gotop",function () {
@@ -857,3 +857,22 @@ $(document).on('click','.wish', function(e) {
         }
     });
 });
+
+function updateCsrfTokens(formElm, data) {
+    if (data && data.csrfinstance && data.csrftoken) {
+        formElm.find('input[name=csrfinstance]').val(data.csrfinstance);
+        formElm.find('input[name=csrftoken]').val(data.csrftoken);
+    }
+}
+
+function scrollToElementTop(selector, animate = true) {
+    const $el = $(selector);
+    if (!$el.length) return;
+    const top = $el.offset().top;
+
+    if (animate) {
+        $('html, body').animate({ scrollTop: top }, 500);
+    } else {
+        $(window).scrollTop(top);
+    }
+}
