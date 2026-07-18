@@ -469,8 +469,9 @@ class ExtensionPaypalCommerce extends Extension
     {
         if (IS_ADMIN) { return; }
         $that =& $this->baseObject;
-        //do nothing when the product is out-of-stock
-        if(!$that->view->getData('can_buy')){
+        //do nothing when the product is out-of-stock OR blocked for ordering
+        if(!$that->view->getData('can_buy') || $that->view->getData('product_info')['call_to_order']
+        ){
             return;
         }
 

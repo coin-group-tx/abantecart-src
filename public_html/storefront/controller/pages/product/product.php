@@ -958,10 +958,11 @@ class ControllerPagesProductProduct extends AController
             }
         }
 
+        $data = [
+            'product_info' => $product_info,
+        ];
+
         if ($this->config->get('fast_checkout_buy_now_status')) {
-            $data = [
-                'product_info' => $product_info,
-            ];
             $data['button_add_to_cart'] = $this->language->get('button_add_to_cart');
             $data['text_buynow'] = $this->language->get('fast_checkout_buy_now');
             $data['buynow_url'] = $this->html->getSecureURL('checkout/fast_checkout', '&single_checkout=1');
