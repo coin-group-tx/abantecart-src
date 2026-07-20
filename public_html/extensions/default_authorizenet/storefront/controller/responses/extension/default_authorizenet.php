@@ -18,11 +18,6 @@
  *    needs, please refer to http://www.AbanteCart.com for more information.
  */
 
-/**
- * Class ControllerResponsesExtensionAuthorizeNet
- *
- * @property  ModelExtensionDefaultAuthorizeNet $model_extension_default_authorizenet
- */
 class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
 {
     public function main()
@@ -118,8 +113,7 @@ class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
 
         /** @var ModelCheckoutOrder $mdl */
         $mdl = $this->loadModel('checkout/order');
-        /** @var ModelExtensionDefaultAuthorizenet $anetMdl */
-        $anetMdl = $this->loadModel('extension/default_authorizenet');
+        
         $orderId = (int) $this->session->data['order_id'];
         $orderInfo = $mdl->getOrder($orderId);
         if (!$orderInfo || !$orderId) {
@@ -137,35 +131,64 @@ class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
 
         ADebug::checkpoint('AuthorizeNet Payment: Order ID ' . $orderId);
 
-        $pd = [
-            'amount'             => $amount,
-            'currency'           => $currency,
-            'order_id'           => $orderId,
-            'cc_owner_firstname' => html_entity_decode($orderInfo['payment_firstname'], ENT_QUOTES, 'UTF-8'),
-            'cc_owner_lastname'  => html_entity_decode($orderInfo['payment_lastname'], ENT_QUOTES, 'UTF-8'),
-            'dataDescriptor'     => $post['dataDescriptor'],
-            'dataValue'          => $post['dataValue'],
-        ];
+        try {
+            $paymentData = array_merge(
+                $orderInfo,                
+                [
+                    'amount'             => $amount,
+                    'currency'           => $currency,
+                    'cc_owner_firstname' => html_entity_decode($orderInfo['payment_firstname'], ENT_QUOTES, 'UTF-8'),
+                    'cc_owner_lastname'  => html_entity_decode($orderInfo['payment_lastname'], ENT_QUOTES, 'UTF-8'),
+                    'dataDescriptor'     => $post['dataDescriptor'],
+                    'dataValue'          => $post['dataValue']
+                ],
+                //allow passing data from hooks
+                (array)$this->data['payment_data']
+            );
 
-        $processResult = $anetMdl->processPayment($pd);
+            /** @var ModelExtensionDefaultAuthorizenet $anetMdl */
+            $anetMdl = $this->loadModel('extension/default_authorizenet');
+            $transactionDetails = $this->data['transaction_details'] = $anetMdl->processPayment($paymentData);
+            $output['success'] = $this->html->getSecureURL('checkout/finalize');
+            ADebug::variable('Processing payment result: ', $this->data['transaction_details']);
 
-        ADebug::variable('Processing payment result: ', $processResult);
-        if ($processResult['error']) {
-            // transaction failed
-            $output['error_text'] = (string) $processResult['error'];
-            if ($processResult['code']) {
-                $output['error_text'] .= ' (' . $processResult['code'] . ')';
-            }
-        } else {
-            if ($processResult['paid']) {
-                $output['success'] = $this->html->getSecureURL('checkout/finalize');
+            $responseCode = $transactionDetails['responseCode'];
+            //update transaction details in the order table
+            $this->db->query(
+                "UPDATE ".$this->db->table('orders')."
+                    SET payment_method_data = '".$this->db->escape(serialize($transactionDetails))."'
+                    WHERE order_id = '".(int) $orderId."'"
+            );
+            
+            //we allow only 1 = Approved & 4 = Held for Review
+            if (in_array((int)$responseCode, [1,4])) {                
+                $orderStatusId = 
+                    $responseCode == 4 
+                    //when hold for review
+                    ? $this->order_status->getStatusByTextId('pending')
+                    : $this->config->get('default_authorizenet_status_success_settled');
+
+                $comment = str_contains($paymentData['shipping_method_key'],'pickup') 
+                        ?
+                        'You will be contacted by an account representative '
+                        . 'when your order is available for pickup.'
+                    : '';
+                $output['paid'] = true;
+                $mdl->confirm( $orderId, $orderStatusId, $comment );
             } else {
-                //Unexpected result
-                $output['error_text'] = $this->language->get('error_system') . '(abc)';
+                // Some other error, assume payment declined
+                $output['error_text'] = $transactionDetails['description'].'(ResponseCode:'.$responseCode.')';
+            }        
+        }catch(Exception $e){
+            $output['error_text'] = $e->getMessage();
+            $errorCode = $e->getCode();
+            if ($errorCode) {
+                $output['error_text'] .= ' (' . $errorCode . ')';
             }
+            $this->log->write($output['error_text'].PHP_EOL.$e->getTraceAsString());
         }
 
-        //init controller data
+        //update controller data
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
 
         if (isset($output['error']) && $output['error']) {

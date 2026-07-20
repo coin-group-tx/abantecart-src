@@ -1079,7 +1079,7 @@ class ControllerResponsesCheckoutPay extends AController
 
         $this->data['gaOrderData'] = AOrder::getGoogleAnalyticsOrderData($order_data);
         $this->data['gaOrderData']['transaction_id'] = $order_id;
-        $this->_clear_data();
+        $this->clearSessionData();
         $this->data['step'] = 'process';
 
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
@@ -1277,7 +1277,7 @@ class ControllerResponsesCheckoutPay extends AController
         ];
     }
 
-    protected function _clear_data()
+    protected function clearSessionData()
     {
         unset(
             $this->session->data['used_balance'],
@@ -1288,7 +1288,8 @@ class ControllerResponsesCheckoutPay extends AController
             $this->session->data['payment_method'],
             $this->session->data['payment_methods'],
             $this->session->data['order_id'],
-            $this->session->data['fc']
+            $this->session->data['fc'],
+            $this->session->data['processing_order_errors']            
         );
         $this->fc_session = [];
         $this->cart->clear();
