@@ -29,9 +29,6 @@ class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
 
         $this->buildForm();
 
-        //update controller data
-        $this->extensions->hk_UpdateData($this, __FUNCTION__);
-
         $this->data['callback_url'] = $this->html->getSecureURL('r/extension/default_authorizenet/send');
         $this->data['acceptUiUrl'] = $this->config->get('default_authorizenet_test_mode')
             ? 'https://jstest.authorize.net/v3/AcceptUI.js'
@@ -40,20 +37,18 @@ class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
         $this->data['error_unknown'] = $this->language->get('error_unknown');
         $this->view->batchAssign($this->data);
         $this->processTemplate('responses/default_authorizenet.tpl');
+        //update controller data
+        $this->extensions->hk_UpdateData($this, __FUNCTION__);
     }
 
     public function buildForm()
     {
         $orderId = (int) $this->session->data['order_id'];
-        if (!$orderId) {
-            redirect($this->html->getSecureURL('checkout/cart'));
-        }
+
         /** @var ModelCheckoutOrder $mdl */
         $mdl = $this->loadModel('checkout/order');
         $this->data['order_info'] = $orderInfo = $mdl->getOrder($orderId);
-        if (!$orderInfo) {
-            redirect($this->html->getSecureURL('checkout/cart'));
-        }
+
         $this->data['payment_address'] = $orderInfo['payment_address_1'] . " " . $orderInfo['payment_address_2'];
         $this->data['text_wait'] = $this->language->get('text_wait');
 
@@ -145,6 +140,7 @@ class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
                 //allow passing data from hooks
                 (array)$this->data['payment_data']
             );
+            $this->data['payment_data'] = $paymentData;
 
             /** @var ModelExtensionDefaultAuthorizenet $anetMdl */
             $anetMdl = $this->loadModel('extension/default_authorizenet');
@@ -191,7 +187,7 @@ class ControllerResponsesExtensionDefaultAuthorizeNet extends AController
         //update controller data
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
 
-        if (isset($output['error']) && $output['error']) {
+        if (isset($output['error_text']) && $output['error_text']) {
             $csrftoken = $this->registry->get('csrftoken');
             $output['csrfinstance'] = $csrftoken->setInstance();
             $output['csrftoken'] = $csrftoken->setToken();
