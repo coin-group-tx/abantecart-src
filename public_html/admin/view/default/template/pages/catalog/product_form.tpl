@@ -66,9 +66,9 @@
                         <?php }
                         if($name == 'price'){
                             // include part with price-with-taxes calculation
-                            include (__DIR__.DIRECTORY_SEPARATOR.   'product_form_price.tpl');
-                        }else{?>
-                            <?php echo $field;
+                            include ('product_form_price.tpl');
+                        }else{
+                            echo $field instanceof stdClass ? $field->html : $field;
                         }?>
 					</div>
                     <?php if (!empty($error[$name])) { ?>

@@ -507,6 +507,7 @@ class ControllerPagesCatalogProduct extends AController
                 'record_id' => $productId,
             ];
             $product_info = $this->model_catalog_product->getProduct($productId);
+            $this->data['product_info'] = &$product_info;
             $product_info['featured'] = $product_info['featured'] ? 1 : 0;
             $product_info['has_track_options'] = $this->model_catalog_product->hasTrackOptions($productId);
             $product_info['stock_locations'] = $this->model_catalog_product->getProductStockLocations($productId);
