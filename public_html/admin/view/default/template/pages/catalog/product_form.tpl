@@ -64,12 +64,8 @@
 								<?php echo $keyword_button; ?>
 							</span>
                         <?php }
-                        if($name == 'price'){
-                            // include part with price-with-taxes calculation
-                            include ('product_form_price.tpl');
-                        }else{
-                            echo $field;
-                        }?>
+                        echo $field;
+                        ?>
 					</div>
                     <?php if (!empty($error[$name])) { ?>
 						<span class="help-block field_err"><?php echo $error[$name]; ?></span>
