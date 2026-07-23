@@ -30,7 +30,7 @@
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
 
         <?php foreach ($form['fields'] as $section => $fields) { ?>
-			<label class="h4 heading"><?php echo ${'tab_'.$section}; ?></label>
+			<label class="h4 heading"><?php echo ${'tab_'.$section} ?: ${'entry_'.$section}; ?></label>
             <?php
             foreach ($fields as $name => $field) { ?>
                 <?php
@@ -68,7 +68,7 @@
                             // include part with price-with-taxes calculation
                             include ('product_form_price.tpl');
                         }else{
-                            echo $field instanceof stdClass ? $field->html : $field;
+                            echo $field;
                         }?>
 					</div>
                     <?php if (!empty($error[$name])) { ?>
