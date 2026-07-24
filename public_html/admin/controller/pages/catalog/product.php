@@ -1207,9 +1207,9 @@ class ControllerPagesCatalogProduct extends AController
                     'length_class' => $form->getFieldHtml(
                         [
                             'type'    => 'selectbox',
-                            'name'    => 'length_class',
+                            'name'    => 'length_class_id',
                             'title'   => $this->language->get('entry_length_class'),
-                            'value'   => $this->data['length_class'],
+                            'value'   => $this->data['length_class_id'],
                             'options' => $this->data['length_classes'],
                             'attr'    => ' autocomplete="false"',
                             'style'   => 'tiny-field',
