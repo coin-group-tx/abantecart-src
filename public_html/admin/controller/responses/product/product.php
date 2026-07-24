@@ -2173,11 +2173,15 @@ class ControllerResponsesProductProduct extends AController
             $cData = [];
             $tax = new ATax($this->registry, $cData);
             if (isset($price)) {
-                $this->data['output']['price'] = (float)$price;
-                $this->data['output']['price_with_tax'] = $tax->calculate((float)$price, $taxClassId, true);      
+                $this->data['output']['price'] = $this->currency->format_number((float)$price);
+                $this->data['output']['price_with_tax'] = $this->currency->format_number(
+                    $tax->calculate((float)$price, $taxClassId, true)
+                );      
             } elseif (isset($priceWithTax)) {
-                $this->data['output']['price'] = $tax->calculate((float)$priceWithTax, $taxClassId, true, true);
-                $this->data['output']['price_with_tax'] = (float)$priceWithTax;
+                $this->data['output']['price'] = $this->currency->format_number(
+                    $tax->calculate((float)$priceWithTax, $taxClassId, true, true)
+                );
+                $this->data['output']['price_with_tax'] = $this->currency->format_number((float)$priceWithTax);
             }
         }else{
             $price = (float)$price;
