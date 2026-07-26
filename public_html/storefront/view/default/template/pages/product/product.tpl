@@ -422,10 +422,9 @@ if (!empty($product_media)) {
                          data-bs-parent="#productDetailsAccordion">
                         <div class="accordion-body">
                             <ul class="list-group list-unstyled list-inline ">
-                                <?php foreach ($mediaResources as $res) {
-                                    $resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
-                                    $resUrl = $res['direct_url'] ?: ($res['main_url'] ?? '');
-                                    $isExternal = ($res['origin'] ?? '') === 'external';
+$resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
+$resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
+$isExternal = ($res['origin'] ?? '') === 'external';
                                     ?>
                                     <li class="list-group-item d-flex justify-content-between align-items-center col-12">
                                         <?php if ($isExternal && !empty($res['main_html'])) { ?>
