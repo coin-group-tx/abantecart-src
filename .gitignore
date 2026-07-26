@@ -16,13 +16,11 @@
 /public_html/system/logs/*
 /public_html/system/config.php
 /public_html/image/thumbnails/*
-/public_html/resources/image/
 /public_html/system/page_builder/public/*
 /public_html/system/page_builder/savepoints/*
 /public_html/extensions/novator/storefront/view/novator/default_preset_prepared.json
 /public_html/storefront/view/default/default_preset_prepared.json
 /public_html/system/page_builder/presets/novator/
-/public_html/extensions/novator_custom/
 /public_html/.htaccess
 /public_html/extensions/default_croatian/
 /public_html/extensions/default_czech/
@@ -47,4 +45,3 @@
 /public_html/extensions/default_ukrainian/
 /public_html/.well-known/
 /tests/phpunit/.phpunit.result.cache
-public_html/import.php
