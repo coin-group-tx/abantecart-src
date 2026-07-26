@@ -524,11 +524,9 @@ if ($error){ ?>
         <!-- <?php echo $mediaType; ?> Tab Content Starts -->
             <div class="tab-pane" id="collapseMedia<?php echo $mediaId; ?>" role="tabpanel" aria-labelledby="media_<?php echo $mediaId; ?>">
                 <div class="tab-pane-body">
-                        <?php foreach ($mediaResources as $res) {
-                            $resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
-                            $resUrl = $res['direct_url'] ?: ($res['main_url'] ?? '');
-                            $isExternal = ($res['origin'] ?? '') === 'external';
-                            ?>
+$resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
+$resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
+$isExternal = ($res['origin'] ?? '') === 'external';
                             <li class="list-group-item d-flex justify-content-between align-items-center col-12">
                                 <?php if ($isExternal && !empty($res['main_html'])) { ?>
                                     <div class="w-100">
