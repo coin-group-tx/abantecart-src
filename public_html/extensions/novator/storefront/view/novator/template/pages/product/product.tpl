@@ -328,6 +328,7 @@ if ($error){ ?>
     <ul id="productTabs" class="nav nav-tabs profile-tabs mb-4 border-bottom" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="description" data-bs-toggle="tab" href="#collapseDescription" role="tab" aria-controls="collapseDescription" aria-selected="true">
+                <i class="fa-solid fa-circle-info me-1"></i>
                 <?php echo $tab_description; ?>
             </a>
         </li>
@@ -335,7 +336,22 @@ if ($error){ ?>
                 <?php if($review_form_status or $total_reviews>0){?>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="review" data-bs-toggle="tab" href="#collapseReview" role="tab" aria-controls="collapseReview" aria-selected="false" tabindex="-1" aria-selected="true">
+                    <i class="fa-solid fa-comment-dots me-1"></i>
                     <?php echo $tab_review; ?>
+                </a>
+            </li>
+            <?php }
+        }
+        if (!empty($product_media)) {
+            foreach ($product_media as $mediaType => $media) {
+                $mediaId = preg_replace('/[^a-z0-9_]/i', '', $mediaType);
+                ?>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="media_<?php echo $mediaId; ?>" data-bs-toggle="tab"
+                   href="#collapseMedia<?php echo $mediaId; ?>" role="tab"
+                   aria-controls="collapseMedia<?php echo $mediaId; ?>" aria-selected="false" tabindex="-1">
+                    <i class="<?php echo $media['icon']; ?> me-1"></i>
+                    <?php echo $media['title']; ?> (<?php echo count((array)$media['resources']); ?>)
                 </a>
             </li>
             <?php }
@@ -343,6 +359,7 @@ if ($error){ ?>
         if ($tags){ ?>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="tags" data-bs-toggle="tab" href="#collapseTags" role="tab" aria-controls="collapseTags" aria-selected="false" tabindex="-1">
+                    <i class="fa-solid fa-hashtag me-1"></i>
                     <?php echo $text_tags; ?>
                 </a>
             
@@ -351,6 +368,7 @@ if ($error){ ?>
         if ($downloads){ ?>
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="downloads" data-bs-toggle="tab" href="#collapseDownloads" role="tab" aria-controls="collapseDownloads" aria-selected="false" tabindex="-1">
+                <i class="fa-solid fa-file-export me-1"></i>
                 <?php echo $tab_downloads; ?>
             </a>
         </li>
@@ -497,6 +515,73 @@ if ($error){ ?>
             </div>
         <!-- Review Tab Content Ends -->
         <?php }
+        if (!empty($product_media)) {
+            foreach ($product_media as $mediaType => $media) {
+                $mediaId = preg_replace('/[^a-z0-9_]/i', '', $mediaType);
+                $mediaTitle = $media['title'];
+                $mediaResources = (array)$media['resources'];
+                ?>
+        <!-- <?php echo $mediaType; ?> Tab Content Starts -->
+            <div class="tab-pane" id="collapseMedia<?php echo $mediaId; ?>" role="tabpanel" aria-labelledby="media_<?php echo $mediaId; ?>">
+                <div class="tab-pane-body">
+$resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
+$resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
+$isExternal = ($res['origin'] ?? '') === 'external';
+                            <li class="list-group-item d-flex justify-content-between align-items-center col-12">
+                                <?php if ($isExternal && !empty($res['main_html'])) { ?>
+                                    <div class="w-100">
+                                        <div class="product-media-embed mb-2"><?php echo $res['main_html']; ?></div>
+                                        <?php if ($resTitle) { ?>
+                                            <div class="fs-5 fw-bolder"><?php echo $resTitle; ?></div>
+                                        <?php } ?>
+                                    </div>
+                                <?php } elseif ($mediaType === 'audio' && $resUrl) { ?>
+                                    <div class="w-100">
+                                        <?php if ($resTitle) { ?>
+                                            <div class="fs-5 fw-bolder mb-2"><?php echo $resTitle; ?></div>
+                                        <?php } ?>
+                                        <audio class="w-100" controls preload="none" src="<?php echo $resUrl; ?>">
+                                            <a href="<?php echo $resUrl; ?>" target="_blank" rel="noopener">
+                                                <?php echo $text_download_resource; ?>
+                                            </a>
+                                        </audio>
+                                    </div>
+                                <?php } elseif ($mediaType === 'video' && $resUrl) { ?>
+                                    <div class="w-100">
+                                        <?php if ($resTitle) { ?>
+                                            <div class="fs-5 fw-bolder mb-2"><?php echo $resTitle; ?></div>
+                                        <?php } ?>
+                                        <video class="w-100" controls preload="metadata" src="<?php echo $resUrl; ?>">
+                                            <a href="<?php echo $resUrl; ?>" target="_blank" rel="noopener">
+                                                <?php echo $text_download_resource; ?>
+                                            </a>
+                                        </video>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="fs-5 fw-bolder"><?php echo $resTitle;
+                                        if (!empty($res['description'])
+                                            && !preg_match('#^https?://#i', (string)$res['description'])
+                                        ) { ?>
+                                            <div class="fs-6 fw-normal text-secondary mt-1"><?php echo $res['description']; ?></div>
+                                        <?php } ?>
+                                    </div>
+                                    <?php if ($resUrl) { ?>
+                                        <a class="ms-auto text-nowrap btn btn-outline-dark"
+                                           href="<?php echo $resUrl; ?>"
+                                           target="_blank"
+                                           rel="noopener">
+                                            <i class="fa-solid fa-<?php echo $mediaType === 'pdf' ? 'eye' : 'download'; ?>"></i>
+                                            <?php echo $mediaType === 'pdf' ? $text_open_resource : $text_download_resource; ?>
+                                        </a>
+                                    <?php } ?>
+                                <?php } ?>
+                            </li>
+                        <?php } ?>
+                </div>
+            </div>
+        <!-- <?php echo $mediaType; ?> Tab Content Ends -->
+            <?php }
+        }
         if ($tags){ ?>
         <!-- tags Tab Content Starts -->
             <div class="tab-pane" id="collapseTags" role="tabpanel" aria-labelledby="tags">
