@@ -1057,10 +1057,13 @@ class ControllerPagesProductProduct extends AController
         ];
 
         $productMedia = [];
-        foreach ($mediaTypes as $type => $meta) {
-            $rl = new AResource($type);
-            $resources = $rl->getResourceAllObjects('products', $product_id, [], 0, false);
-            if (!$resources) {
+foreach ($mediaTypes as $type => $meta) {
+    $rl = new AResource($type);
+    $sizes = ['orig' => [], 'main' => null, 'thumb' => null, 'thumb2' => []];
+    $resources = $rl->getResourceAllObjects('products', $product_id, $sizes, 0, false);
+    if (!$resources) {
+        continue;
+    }
                 continue;
             }
             // getResourceAllObjects returns a single associative array when only one item exists
