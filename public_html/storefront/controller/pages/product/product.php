@@ -808,6 +808,8 @@ class ControllerPagesProductProduct extends AController
             $this->data['images'] = $option_images['images'];
         }
 
+        $this->data['product_media'] = $this->prepareProductMedia($product_id);
+
         $products = [];
         $results = $pMdl->getProductRelated($product_id);
         foreach ($results as $result) {
@@ -1023,6 +1025,58 @@ class ControllerPagesProductProduct extends AController
 
         $this->view->batchAssign($this->data);
         $this->processTemplate();
+    }
+
+    /**
+     * Load non-image product resources for storefront media tabs.
+     *
+     * @param int $product_id
+     *
+     * @return array
+     * @throws AException
+     */
+    protected function prepareProductMedia(int $product_id): array
+    {
+        $mediaTypes = [
+            'audio'   => [
+                'icon'  => 'fa-solid fa-music',
+                'title' => $this->language->get('tab_audio'),
+            ],
+            'video'   => [
+                'icon'  => 'fa-solid fa-video',
+                'title' => $this->language->get('tab_video'),
+            ],
+            'pdf'     => [
+                'icon'  => 'fa-solid fa-file-pdf',
+                'title' => $this->language->get('tab_pdf'),
+            ],
+            'archive' => [
+                'icon'  => 'fa-solid fa-file-zipper',
+                'title' => $this->language->get('tab_archive'),
+            ],
+        ];
+
+        $productMedia = [];
+        foreach ($mediaTypes as $type => $meta) {
+            $rl = new AResource($type);
+            $sizes = ['orig' => [], 'main' => null, 'thumb' => null, 'thumb2' => []];
+            $resources = $rl->getResourceAllObjects('products', $product_id, $sizes, 0, false);
+            if (!$resources) {
+                continue;
+            }
+
+            // getResourceAllObjects returns a single associative array when only one item exists
+            if (isset($resources['origin']) || isset($resources['resource_id'])) {
+                $resources = [$resources];
+            }
+            $productMedia[$type] = [
+                'title'     => $meta['title'],
+                'icon'      => $meta['icon'],
+                'resources' => array_values($resources),
+            ];
+        }
+
+        return $productMedia;
     }
 
     /**
