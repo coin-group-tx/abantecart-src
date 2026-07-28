@@ -172,6 +172,7 @@ class ModelExtensionDefaultAuthorizeNet extends Model
         $merchantAuthentication = $this->getAccess();
         // Set the transaction's refId
         $refId = $paymentData['refId'] ?: 'abc-'. $paymentData['order_id'];
+        $refId .= '-'.randomWord(4);
         // Create the payment object for a payment nonce
         $opaqueData = new OpaqueDataType();
         $opaqueData->setDataDescriptor($paymentData['dataDescriptor']);

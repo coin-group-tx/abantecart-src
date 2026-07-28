@@ -7,6 +7,7 @@
     <div class="mb-3">
         <input type="hidden" name="dataValue" id="dataValue"/>
         <input type="hidden" name="dataDescriptor" id="dataDescriptor"/>
+        <input type="hidden" name="cc_number" id="cc_number"/>
         <input type="hidden" name="bin" id="bin"/>
         <input type="hidden" name="expDate" id="expDate"/>
     </div>
@@ -86,6 +87,7 @@
         scrollToElementTop('#<?php echo $form_open->name?>');
         $("#dataDescriptor").val(opaqueData.dataDescriptor);
         $("#dataValue").val(opaqueData.dataValue);
+        $("#cc_number").val(cardData.cardNumber);
         $("#bin").val(cardData.bin);
         $("#expDate").val(cardData.expDate || '');
         confirmSubmit(form, <?php js_echo($callback_url);?>);
