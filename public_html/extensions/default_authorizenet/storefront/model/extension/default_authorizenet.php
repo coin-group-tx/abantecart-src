@@ -257,7 +257,7 @@ class ModelExtensionDefaultAuthorizeNet extends Model
         
         if (!$apiResponse) {
             throw new Exception(
-                __FUNCTION__.': Empty API response: ', var_export($apiResponse, true)
+                __FUNCTION__.': Empty API response: '. var_export($apiResponse, true)
             );
         }
 
@@ -265,7 +265,7 @@ class ModelExtensionDefaultAuthorizeNet extends Model
         $transactionResponse = $apiResponse->getTransactionResponse();
         if ( !$transactionResponse ) {
             throw new Exception(
-                __FUNCTION__.': Empty transaction response: ', var_export($apiResponse, true)
+                __FUNCTION__.': Empty transaction response: '. var_export($apiResponse, true)
             );
         }
         
@@ -287,7 +287,7 @@ class ModelExtensionDefaultAuthorizeNet extends Model
         }
         $errorsObj = $transactionResponse?->getErrors();
         if ($errorsObj) {
-            throw new Exception($errorsObj[0]?->getErrorText(), $errorsObj[0]?->getErrorCode());
+            throw new Exception((string)$errorsObj[0]?->getErrorText(), (int)$errorsObj[0]?->getErrorCode());
         } else {
             $errorMessage = '';
             $messages = $transactionResponse?->getMessages();
