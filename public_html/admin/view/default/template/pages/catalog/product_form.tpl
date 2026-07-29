@@ -30,7 +30,7 @@
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
 
         <?php foreach ($form['fields'] as $section => $fields) { ?>
-			<label class="h4 heading"><?php echo ${'tab_'.$section}; ?></label>
+			<label class="h4 heading"><?php echo ${'tab_'.$section} ?: ${'entry_'.$section}; ?></label>
             <?php
             foreach ($fields as $name => $field) { ?>
                 <?php
@@ -64,12 +64,8 @@
 								<?php echo $keyword_button; ?>
 							</span>
                         <?php }
-                        if($name == 'price'){
-                            // include part with price-with-taxes calculation
-                            include (__DIR__.DIRECTORY_SEPARATOR.   'product_form_price.tpl');
-                        }else{?>
-                            <?php echo $field;
-                        }?>
+                        echo $field;
+                        ?>
 					</div>
                     <?php if (!empty($error[$name])) { ?>
 						<span class="help-block field_err"><?php echo $error[$name]; ?></span>
