@@ -52,7 +52,7 @@ class ModelCatalogProduct extends Model
         $languageId = (int) $this->config->get('storefront_language_id');
 
         $query = $this->db->query(
-            "SELECT DISTINCT p.*,
+            "SELECT DISTINCT *,
                         pd.name AS name,
                         pd.blurb AS blurb,
                         m.name AS manufacturer,
@@ -60,7 +60,7 @@ class ModelCatalogProduct extends Model
                         stock_checkout,
                         lcd.unit as length_class_name, " . PHP_EOL .
             $this->_sql_avg_rating_string() . ", " .
-            $this->_sql_final_price_string() . " " .
+            $this->_sql_final_price_string() . ", p.product_id " .
             $this->_sql_join_string() . PHP_EOL
             . " LEFT JOIN " . $this->db->table("length_class_descriptions") . " lcd
                 ON (p.length_class_id = lcd.length_class_id
