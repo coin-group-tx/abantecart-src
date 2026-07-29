@@ -520,13 +520,12 @@ if ($error){ ?>
                 $mediaId = preg_replace('/[^a-z0-9_]/i', '', $mediaType);
                 $mediaTitle = $media['title'];
                 $mediaResources = (array)$media['resources'];
+                $resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
+                $resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
+                $isExternal = ($res['origin'] ?? '') === 'external'; 
                 ?>
-        <!-- <?php echo $mediaType; ?> Tab Content Starts -->
             <div class="tab-pane" id="collapseMedia<?php echo $mediaId; ?>" role="tabpanel" aria-labelledby="media_<?php echo $mediaId; ?>">
-                <div class="tab-pane-body">
-$resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
-$resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
-$isExternal = ($res['origin'] ?? '') === 'external';
+                <div class="tab-pane-body"> 
                             <li class="list-group-item d-flex justify-content-between align-items-center col-12">
                                 <?php if ($isExternal && !empty($res['main_html'])) { ?>
                                     <div class="w-100">
@@ -579,8 +578,7 @@ $isExternal = ($res['origin'] ?? '') === 'external';
                         <?php } ?>
                 </div>
             </div>
-        <!-- <?php echo $mediaType; ?> Tab Content Ends -->
-            <?php }
+            <?php 
         }
         if ($tags){ ?>
         <!-- tags Tab Content Starts -->

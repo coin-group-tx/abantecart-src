@@ -407,7 +407,10 @@ if (!empty($product_media)) {
         $mediaTitle = $media['title'];
         $mediaIcon = $media['icon'];
         $mediaResources = (array)$media['resources'];
-        ?>
+        $resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
+        $resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
+        $isExternal = ($res['origin'] ?? '') === 'external';
+    ?>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingMedia<?php echo $mediaId; ?>">
                         <button id="media_<?php echo $mediaId; ?>" class="accordion-button collapsed" type="button"
@@ -422,10 +425,6 @@ if (!empty($product_media)) {
                          data-bs-parent="#productDetailsAccordion">
                         <div class="accordion-body">
                             <ul class="list-group list-unstyled list-inline ">
-$resTitle = $res['title'] ?: ($res['name'] ?? $mediaTitle);
-$resUrl = ($res['direct_url'] ?? '') ?: ($res['main_url'] ?? '');
-$isExternal = ($res['origin'] ?? '') === 'external';
-                                    ?>
                                     <li class="list-group-item d-flex justify-content-between align-items-center col-12">
                                         <?php if ($isExternal && !empty($res['main_html'])) { ?>
                                             <div class="w-100">
@@ -480,7 +479,7 @@ $isExternal = ($res['origin'] ?? '') === 'external';
                         </div>
                     </div>
                 </div>
-    <?php }
+<?php
 }
 if ($tags){ ?>
                 <div class="accordion-item">
