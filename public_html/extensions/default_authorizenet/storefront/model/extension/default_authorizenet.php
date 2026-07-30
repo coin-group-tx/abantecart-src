@@ -172,7 +172,7 @@ class ModelExtensionDefaultAuthorizeNet extends Model
         $merchantAuthentication = $this->getAccess();
         // Set the transaction's refId
         $refId = $paymentData['refId'] ?: 'abc-'. $paymentData['order_id'];
-        $refId .= '-'.randomWord(4);
+
         // Create the payment object for a payment nonce
         $opaqueData = new OpaqueDataType();
         $opaqueData->setDataDescriptor($paymentData['dataDescriptor']);
@@ -213,7 +213,7 @@ class ModelExtensionDefaultAuthorizeNet extends Model
         // Add values for transaction settings
         $duplicateWindowSetting = new SettingType();
         $duplicateWindowSetting->setSettingName("duplicateWindow");
-        $duplicateWindowSetting->setSettingValue("60");
+        $duplicateWindowSetting->setSettingValue("4");
         // Create a TransactionRequestType object and add the previous objects to it
         $transactionRequestType = new TransactionRequestType();
         $transactionType = $this->config->get('default_authorizenet_settlement') == 'authcapture'
