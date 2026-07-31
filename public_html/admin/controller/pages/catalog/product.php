@@ -939,6 +939,7 @@ class ControllerPagesCatalogProduct extends AController
                         ),
                         'entry_tax_rule'       => $this->html->buildElement(
                             [
+                                'name'   => 'tax_rule',
                                 'type'   => "button",
                                 'href'   => $this->html->getSecureURL('localisation/tax_class'),
                                 'text'   => $this->language->get('entry_tax_rule'),
@@ -1130,7 +1131,7 @@ class ControllerPagesCatalogProduct extends AController
             ]
         );
 
-        $this->data['form']['fields']['data']['shipping'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['shipping'] = $form->getFieldHtml(
             [
                 'type'  => 'checkbox',
                 'name'  => 'shipping',
@@ -1139,7 +1140,7 @@ class ControllerPagesCatalogProduct extends AController
             ]
         );
 
-        $this->data['form']['fields']['data']['free_shipping'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['free_shipping'] = $form->getFieldHtml(
             [
                 'type'  => 'checkbox',
                 'name'  => 'free_shipping',
@@ -1148,7 +1149,7 @@ class ControllerPagesCatalogProduct extends AController
             ]
         );
 
-        $this->data['form']['fields']['data']['ship_individually'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['ship_individually'] = $form->getFieldHtml(
             [
                 'type'  => 'checkbox',
                 'name'  => 'ship_individually',
@@ -1157,7 +1158,7 @@ class ControllerPagesCatalogProduct extends AController
             ]
         );
 
-        $this->data['form']['fields']['data']['shipping_price'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['shipping_price'] = $form->getFieldHtml(
             [
                 'type'  => 'input',
                 'name'  => 'shipping_price',
@@ -1170,7 +1171,7 @@ class ControllerPagesCatalogProduct extends AController
             $this->data['length_classes'][0] = $this->language->get('text_none');
         }
 
-        $this->data['form']['fields']['data']['dimensions'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['dimensions'] = $form->getFieldHtml(
             [
                 'type'     => 'slot',
                 'name'     => 'dimensions',
@@ -1241,7 +1242,7 @@ class ControllerPagesCatalogProduct extends AController
             $this->data['weight_class_id'] = 0;
         }
 
-        $this->data['form']['fields']['data']['weight'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['weight'] = $form->getFieldHtml(
             [
                 'type'  => 'input',
                 'name'  => 'weight',
@@ -1251,7 +1252,7 @@ class ControllerPagesCatalogProduct extends AController
             ]
         );
 
-        $this->data['form']['fields']['data']['weight_class'] = $form->getFieldHtml(
+        $this->data['form']['fields']['shipping']['weight_class'] = $form->getFieldHtml(
             [
                 'type'    => 'selectbox',
                 'name'    => 'weight_class_id',

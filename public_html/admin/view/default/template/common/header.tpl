@@ -318,9 +318,9 @@ echo $this->html->buildElement(
                     //if controller present need to open modal
                     var onclick = 'onClick="window.open(&apos;' + row.page + '&apos;);"';
                     if (row.controller) {
-                        onclick = ' data-toggle="modal" data-target="#message_modal"' + 'href="' + row.controller + '" ';
+                        onclick = ' data-toggle="modal" data-target="#message_modal"' + ' href="' + row.controller + '" ';
                     }
-                    var html = '<a ' + onclick + ' "class=search_result" title="' + row.text + '">' + row.title + '</a>';
+                    var html = '<a ' + onclick + ' class="search_result" title="' + row.text + '">' + row.title + '</a>';
                     dataobj[row.category].items.push({value: row.order_id, text: html});
                 });
                 var results = [];
@@ -423,7 +423,7 @@ echo $this->html->buildElement(
 
 <?php
 }
-$loader = '<div style="min-height: 60px"><div id="hist_loading" class="center_div_abs"><i class="fa fa-spinner fa-spin fa-2x"></i></div></div>';
+$loader = '<div style="min-height: 60px"><div class="center_div_abs"><i class="fa fa-spinner fa-spin fa-2x"></i></div></div>';
 echo $this->html->buildElement(
     [
         'type'        => 'modal',
