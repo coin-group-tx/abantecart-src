@@ -10,21 +10,18 @@
 	<div class="leftpanel">
 		<div class="logopanel">
 			<i class="sticky_header fa fa-toggle-off fa-fw"></i>
-			<a href="<?php echo $home; ?>">
-				<?php
-				if ($this->getHookVar('logoimage_hookvar')){
-					echo $this->getHookVar('logoimage_hookvar');
-				} else{
-				    ?>
-					<img class="logo_image"
-                         src="<?php echo $template_dir; ?>image/logo.png"
+            <a class="text-center" href="<?php echo $home; ?>">
+                <?php
+                if ($this->getHookVar('logoimage_hookvar')) {
+                    echo $this->getHookVar('logoimage_hookvar');
+                } else { ?>
+                    <img class="img-responsive center-block"
+                         src="<?php echo $logo ? HTTP_DIR_RESOURCE . $logo : $template_dir.'image/logo.png'; ?>"
                          style="max-width:190px; max-height: 40px;"
-						 alt="<?php echo_html2view($heading_title); ?>"
-						 title="<?php echo_html2view($heading_title); ?>"/>
-					<?php
-				}
-				?>
-			</a>
+                         alt="<?php echo_html2view($heading_title); ?>"
+                         title="<?php echo_html2view($heading_title); ?>"/>
+            <?php } ?>
+            </a>
 		</div>
 		<div class="leftpanelinner">
 			<i class="sticky_left fa fa-toggle-off fa-fw"></i>
