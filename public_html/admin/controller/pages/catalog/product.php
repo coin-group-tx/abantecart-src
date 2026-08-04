@@ -326,7 +326,7 @@ class ControllerPagesCatalogProduct extends AController
 
         $this->loadModel('catalog/manufacturer');
         $results = $this->model_catalog_manufacturer->getManufacturers(
-            ['store_id' => $this->session->data['current_store_id']]
+            ['store_id' => (int)$this->session->data['current_store_id']]
         );
         $this->data['brands'] = ['' => $this->language->get('text_select_brand')]
             + array_column($results, 'name', 'manufacturer_id');
@@ -377,10 +377,11 @@ class ControllerPagesCatalogProduct extends AController
                 'type'        => 'selectbox',
                 'name'        => 'status',
                 'value'       => $search_params['status'],
-                'placeholder' => $this->language->get('text_select_status'),
+                'title' => $this->language->get('text_select_status'),
                 'options'     => [
-                    1 => $this->language->get('text_enabled'),
-                    0 => $this->language->get('text_disabled'),
+                    '' => $this->language->get('text_all'),
+                    1  => $this->language->get('text_enabled'),
+                    0  => $this->language->get('text_disabled'),
                 ],
             ]
         );
