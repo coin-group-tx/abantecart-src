@@ -31,7 +31,8 @@
 
         <?php foreach ($form['fields'] as $section => $fields) { ?>
 			<label class="h4 heading"><?php echo ${'tab_'.$section} ?: ${'entry_'.$section}; ?></label>
-            <?php
+            <div class="clearfix wrapper-<?php echo $section;?>">
+        <?php
             foreach ($fields as $name => $field) { ?>
                 <?php
                 //Logic to calculate fields width
@@ -72,7 +73,10 @@
                     <?php } ?>
 				</div>
             <?php } ?>
-        <?php } ?>
+            </div>
+            <hr/>
+        <?php
+        } ?>            
 	</div>
 
 	<div class="panel-footer col-xs-12">
@@ -96,5 +100,5 @@
 				$('#productFrm_keyword').val(data).change();
 			});
 		});
-	});
+    });
 </script>

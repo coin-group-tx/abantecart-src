@@ -220,6 +220,11 @@ class ModelCatalogProduct extends Model
                 $data['product_tags']
             );
         }
+
+        if ($data['settings']) {
+            $this->saveSettings($product_id, $data['settings']);
+        }
+
         $this->cache->remove(['product', 'category', 'collection', 'storefront_menu']);
         return $product_id;
     }
@@ -302,6 +307,10 @@ class ModelCatalogProduct extends Model
             if (isset($data[$f])) {
                 if (in_array($f, $preformat_fields)) {
                     $data[$f] = preformatFloat($data[$f], $this->language->get('decimal_point'));
+                }
+                //serialize non-string data
+                if (!is_string($data[$f]) && $type == 'string') {
+                    $data[$f] = serialize($data[$f]);
                 }
                 $update[] = $f . " = " . $this->db->stringOrNull($data[$f]);
             }
@@ -409,7 +418,32 @@ class ModelCatalogProduct extends Model
             }
         }
 
+        if ($data['settings']) {
+            $this->saveSettings($product_id, $data['settings']);
+        }
+
         $this->_touch_product($product_id);
+    }
+
+    public function saveSettings(int $product_id, $settings)
+    {
+        if (!$settings) {
+            return;
+        }
+
+        $priorSettings = $this->db->query(
+            "SELECT settings 
+             FROM " . $this->db->table("products") . " 
+             WHERE product_id = " . $product_id
+        )->row['settings'];
+        $priorSettings = unserialize($priorSettings) ? : [];
+        $settings = is_serialized($settings) ? unserialize($settings) : $settings;
+        $newSettings = array_merge($priorSettings, $settings);
+        $this->db->query(
+            "UPDATE " . $this->db->table("products") . "
+             SET settings = '" . $this->db->escape(serialize($newSettings)) . "'
+             WHERE product_id = " . $product_id
+        );
     }
 
     /**
