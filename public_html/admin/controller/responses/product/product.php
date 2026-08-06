@@ -2181,13 +2181,13 @@ class ControllerResponsesProductProduct extends AController
                 $this->data['output']['price'] = $this->currency->format_number(
                     $tax->calculate((float)$priceWithTax, $taxClassId, true, true)
                 );
-                $this->data['output']['price_with_tax'] = $this->currency->format_number((float)$priceWithTax);
+                $this->data['output']['price_with_tax'] = $this->currency->format_number($priceWithTax ?: $price);
             }
         }else{
             $price = (float)$price;
             $priceWithTax = (float)$priceWithTax;
-            $this->data['output']['price'] = $price ?: $priceWithTax;
-            $this->data['output']['price_with_tax'] = $priceWithTax ?: $price;
+            $this->data['output']['price'] = $this->currency->format_number($price ?: $priceWithTax);
+            $this->data['output']['price_with_tax'] = $this->currency->format_number($priceWithTax ?: $price);
         }
         //update controller data
         $this->extensions->hk_UpdateData($this, __FUNCTION__);
